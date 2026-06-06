@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Worldwide Press Publishing Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&amp;family=DM+Sans:wght@300;400;500;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+--black:#09090b;
+--surface:#111114;
+--surface2:#18181c;
+--border:#2a2a30;
+--text:#e8e8ea;
+--muted:#72727a;
+--gold:#c9a84c;
+--red:#d14f46;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+background:var(--black);
+color:var(--text);
+font-family:'DM Sans',sans-serif;
+line-height:1.7;
+}
+
+.container{
+width:min(1180px,92%);
+margin:auto;
+}
+
+nav{
+position:sticky;
+top:0;
+background:rgba(9,9,11,.95);
+backdrop-filter:blur(10px);
+border-bottom:1px solid var(--border);
+z-index:100;
+}
+
+.nav-inner{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 0;
+}
+
+.logo h1{
+font-family:'Playfair Display',serif;
+font-size:1.2rem;
+}
+
+.logo span{
+font-family:'DM Mono',monospace;
+font-size:.72rem;
+letter-spacing:.2em;
+color:var(--gold);
+}
+
+.nav-links{
+display:flex;
+gap:22px;
+flex-wrap:wrap;
+}
+
+.nav-links a{
+text-decoration:none;
+color:var(--muted);
+font-size:.92rem;
+}
+
+.nav-links a:hover{
+color:var(--gold);
+}
+
+.hero{
+padding:120px 0 90px;
+border-bottom:1px solid var(--border);
+}
+
+.hero-tag{
+font-family:'DM Mono',monospace;
+color:var(--gold);
+letter-spacing:.22em;
+font-size:.78rem;
+text-transform:uppercase;
+margin-bottom:18px;
+}
+
+.hero h2{
+font-family:'Playfair Display',serif;
+font-size:clamp(3rem,7vw,5.8rem);
+line-height:.95;
+margin-bottom:22px;
+}
+
+.hero h2 em{
+color:var(--gold);
+}
+
+.hero p{
+max-width:720px;
+color:var(--muted);
+}
+
+.hero-buttons{
+margin-top:36px;
+display:flex;
+gap:16px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:14px 24px;
+border-radius:4px;
+text-decoration:none;
+font-weight:700;
+font-size:.82rem;
+letter-spacing:.1em;
+text-transform:uppercase;
+transition:.2s;
+display:inline-block;
+cursor:pointer;
+border:none;
+}
+
+.btn-primary{
+background:var(--gold);
+color:#000;
+}
+
+.btn-outline{
+border:1px solid var(--border);
+color:var(--text);
+background:transparent;
+}
+
+section{
+padding:90px 0;
+}
+
+.section-title{
+font-family:'Playfair Display',serif;
+font-size:clamp(2rem,5vw,4rem);
+margin-bottom:18px;
+}
+
+.section-title em{
+color:var(--gold);
+}
+
+.section-sub{
+max-width:700px;
+color:var(--muted);
+margin-bottom:50px;
+}
+
+.grid{
+display:grid;
+gap:24px;
+}
+
+.services-grid,.pricing-grid{
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+}
+
+.card{
+background:var(--surface);
+border:1px solid var(--border);
+padding:30px;
+border-radius:6px;
+}
+
+.card small{
+font-family:'DM Mono',monospace;
+color:var(--gold);
+letter-spacing:.15em;
+text-transform:uppercase;
+}
+
+.card h3{
+font-family:'Playfair Display',serif;
+font-size:1.6rem;
+margin:12px 0 16px;
+}
+
+.card p{
+color:var(--muted);
+}
+
+.features{
+list-style:none;
+margin-top:20px;
+}
+
+.features li{
+padding:10px 0;
+border-bottom:1px solid var(--border);
+}
+
+.price{
+font-family:'Playfair Display',serif;
+font-size:3rem;
+margin:18px 0;
+color:var(--gold);
+}
+
+.portal-layout{
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:28px;
+}
+
+.portal-box{
+background:var(--surface);
+border:1px solid var(--border);
+padding:35px;
+border-radius:6px;
+}
+
+form{
+display:grid;
+gap:16px;
+}
+
+input, textarea, select{
+background:var(--black);
+border:1px solid var(--border);
+padding:14px;
+color:var(--text);
+border-radius:4px;
+font-family:'DM Sans',sans-serif;
+width:100%;
+}
+
+textarea{
+min-height:140px;
+}
+
+.status-box{
+background:var(--surface2);
+padding:22px;
+border:1px solid var(--border);
+border-radius:5px;
+margin-bottom:18px;
+}
+
+.status{
+display:inline-block;
+margin-top:10px;
+padding:6px 10px;
+background:rgba(201,168,76,.12);
+color:var(--gold);
+border-radius:30px;
+font-family:'DM Mono',monospace;
+font-size:.75rem;
+}
+
+.auth-actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+footer{
+padding:40px 0;
+border-top:1px solid var(--border);
+text-align:center;
+color:var(--muted);
+}
+
+/* ── Auth Modal ─────────────────────────── */
+.modal-backdrop{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(6px);
+  z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+}
+.modal-backdrop.open{opacity:1;pointer-events:all;}
+
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:44px 40px 36px;
+  width:min(460px,92vw);
+  position:relative;
+  transform:translateY(24px);
+  transition:transform .28s cubic-bezier(.22,1,.36,1);
+}
+.modal-backdrop.open .modal{transform:translateY(0);}
+
+.modal-close{
+  position:absolute;top:16px;right:18px;
+  background:none;border:none;color:var(--muted);
+  font-size:1.4rem;cursor:pointer;line-height:1;
+}
+.modal-close:hover{color:var(--text);}
+
+.modal-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;margin-bottom:6px;
+}
+.modal-logo span{
+  font-family:'DM Mono',monospace;
+  color:var(--gold);font-size:.7rem;letter-spacing:.18em;
+  display:block;margin-top:2px;
+}
+
+.modal-tabs{
+  display:flex;gap:0;margin:22px 0 26px;
+  border:1px solid var(--border);border-radius:5px;overflow:hidden;
+}
+.modal-tab{
+  flex:1;padding:11px;background:transparent;border:none;
+  color:var(--muted);font-family:'DM Sans',sans-serif;
+  font-size:.85rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;cursor:pointer;transition:.18s;
+}
+.modal-tab.active{background:var(--gold);color:#000;}
+
+.modal-form{display:grid;gap:14px;}
+
+.modal-form input{
+  background:var(--black);
+  border:1px solid var(--border);
+  padding:13px 16px;
+  color:var(--text);
+  border-radius:5px;
+  font-family:'DM Sans',sans-serif;
+  font-size:.92rem;
+  width:100%;
+  transition:border-color .18s;
+}
+.modal-form input:focus{
+  outline:none;border-color:var(--gold);
+}
+
+.modal-btn{
+  width:100%;padding:14px;
+  background:var(--gold);color:#000;
+  border:none;border-radius:5px;
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;font-size:.82rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;margin-top:4px;transition:.18s;
+}
+.modal-btn:hover{filter:brightness(1.1);}
+
+.modal-error{
+  background:rgba(209,79,70,.12);
+  border:1px solid rgba(209,79,70,.3);
+  color:#e87b72;
+  padding:10px 14px;
+  border-radius:4px;
+  font-size:.84rem;
+  display:none;
+}
+.modal-error.show{display:block;}
+
+.modal-success{
+  background:rgba(201,168,76,.1);
+  border:1px solid rgba(201,168,76,.25);
+  color:var(--gold);
+  padding:10px 14px;
+  border-radius:4px;
+  font-size:.84rem;
+  display:none;
+}
+.modal-success.show{display:block;}
+
+/* user pill in nav */
+.user-pill{
+  display:none;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);
+  padding:7px 14px;border-radius:30px;
+}
+.user-pill.visible{display:flex;}
+.user-pill span{font-size:.82rem;color:var(--gold);font-family:'DM Mono',monospace;}
+.user-pill button{
+  background:none;border:none;color:var(--muted);
+  font-size:.78rem;cursor:pointer;
+}
+.user-pill button:hover{color:var(--red);}
+
+/* ── Free card badge ───────────────────── */
+.badge-free{
+  display:inline-block;
+  background:rgba(201,168,76,.14);
+  color:var(--gold);
+  border:1px solid rgba(201,168,76,.3);
+  font-family:'DM Mono',monospace;
+  font-size:.68rem;letter-spacing:.15em;
+  padding:4px 10px;border-radius:20px;
+  margin-bottom:10px;text-transform:uppercase;
+}
+
+@media(max-width:900px){
+.portal-layout{grid-template-columns:1fr;}
+.nav-inner{flex-direction:column;gap:18px;}
+}
+</style></head>
+<body>
+<nav>
+<div class="container nav-inner">
+<div class="logo">
+<h1>Worldwide Press Publishing</h1>
+<span>Publishing Service Portal</span>
+</div>
+<div class="nav-links">
+<a href="index.html">← Main Site</a>
+<a href="#services">Services</a>
+<a href="#portal">Submit</a>
+<a href="#pricing">Pricing</a>
+<div class="user-pill" id="userPill">
+  <span id="userEmail"></span>
+  <button id="logoutBtn">Sign out</button>
+</div>
+<a class="btn btn-primary" href="#" id="openAuthBtn" style="padding:9px 18px;font-size:.76rem;">Sign In</a>
+</div>
+</div>
+</nav>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="closeModal" aria-label="Close">&#x2715;</button>
+    <div class="modal-logo">
+      Worldwide Press
+      <span>Publishing Service Portal</span>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin">Sign In</button>
+      <button class="modal-tab" id="tabSignup">Create Account</button>
+    </div>
+    <div class="modal-form" id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email"/>
+      <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password"/>
+      <div class="modal-error" id="loginError"></div>
+      <div class="modal-success" id="loginSuccess"></div>
+      <button class="modal-btn" id="loginSubmitBtn">Sign In to Portal</button>
+    </div>
+    <div class="modal-form" id="signupForm" style="display:none;">
+      <input type="text" id="signupName" placeholder="Full Name" autocomplete="name"/>
+      <input type="email" id="signupEmail" placeholder="Email Address" autocomplete="email"/>
+      <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" autocomplete="new-password"/>
+      <div class="modal-error" id="signupError"></div>
+      <div class="modal-success" id="signupSuccess"></div>
+      <button class="modal-btn" id="signupSubmitBtn">Create My Account</button>
+    </div>
+  </div>
+</div>
+<header class="hero">
+<div class="container">
+<div class="hero-tag">Editorial Publishing · Worldwide Press</div>
+<h2>
+Put Your <em>Work</em><br/>
+In Front of the World
+</h2>
+<p>
+A publishing ecosystem built for artists, authors, bloggers, labels, and cultural movements ready to be read — not just heard.
+</p>
+<div class="hero-buttons">
+<a class="btn btn-primary" href="#portal">Submit Your Story</a>
+<a class="btn btn-outline" href="#pricing">View Packages</a>
+</div>
+</div>
+</header>
+<section id="services">
+<div class="container">
+<h2 class="section-title">Publishing <em>Services</em></h2>
+<div class="grid services-grid">
+<div class="card">
+<small>Editorial</small>
+<h3>Weekly Feature Stories</h3>
+<p>Crafted stories spotlighting artists, books, albums, brands, and movements — written to be read, shared, and remembered.</p>
+</div>
+<div class="card">
+<small>Promotion</small>
+<h3>Press Campaigns</h3>
+<p>Editorial storytelling built around your release — interviews, campaign copy, and placement for EPs, books, and music projects.</p>
+</div>
+<div class="card">
+<small>Publishing</small>
+<h3>Digital Magazines</h3>
+<p>Branded editorial PDFs, online magazines, and visual campaign packages — your identity in print and digital form.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="portal">
+<div class="container">
+<h2 class="section-title">Creator <em>Submission</em></h2>
+<p class="section-sub">
+Sign in, submit your story, attach media links, and manage your publishing request — all in one place.
+</p>
+<div class="portal-layout">
+<div class="portal-box">
+<h3>Creator Submission</h3>
+<form id="submissionForm">
+<input id="name" placeholder="Full Name" required="" type="text"/>
+<input id="email" placeholder="Email Address" required="" type="email"/>
+<select id="type" required="">
+<option value="">Select Submission Type</option>
+<option>Weekly Feature Story</option>
+<option>Album Review</option>
+<option>Book Promotion</option>
+<option>Interview Request</option>
+<option>Press Campaign</option>
+</select>
+<input id="instagram" placeholder="Instagram / Website" type="url"/>
+<input id="drive" placeholder="Google Drive Link" type="url"/>
+<input id="dropbox" placeholder="Dropbox Link" type="url"/>
+<input id="youtube" placeholder="YouTube / SoundCloud Link" type="url"/>
+<textarea id="message" placeholder="Tell us about your project..." required=""></textarea>
+<button class="btn btn-primary" type="submit">Submit Story</button>
+</form>
+<p style="margin-top:14px;font-size:.84rem;color:var(--muted);">
+  Not signed in? <a href="#" id="openAuthInline" style="color:var(--gold);">Sign in or create an account</a> to track your submissions.
+</p>
+</div>
+<div>
+<div class="status-box">
+<h4 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:10px;">Submission Guidelines</h4>
+<ul style="list-style:none;display:grid;gap:12px;">
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-size:1rem;margin-top:2px;">✦</span><span style="color:var(--muted);font-size:.9rem;">Make sure your project is ready — have your bio, cover art, and links prepared before submitting.</span></li>
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-size:1rem;margin-top:2px;">✦</span><span style="color:var(--muted);font-size:.9rem;">We accept music, books, blogs, brands, and cultural projects. If you're unsure, submit anyway.</span></li>
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-size:1rem;margin-top:2px;">✦</span><span style="color:var(--muted);font-size:.9rem;">Use Google Drive, Dropbox, or SoundCloud for media files — direct upload links work best.</span></li>
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-size:1rem;margin-top:2px;">✦</span><span style="color:var(--muted);font-size:.9rem;">The more detail you provide in your project description, the stronger your feature will be.</span></li>
+</ul>
+</div>
+<div class="status-box" style="margin-top:0;">
+<h4 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:10px;">What Happens Next</h4>
+<ul style="list-style:none;display:grid;gap:12px;">
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-weight:700;min-width:20px;font-family:'DM Mono',monospace;font-size:.8rem;margin-top:3px;">01</span><span style="color:var(--muted);font-size:.9rem;">We review your submission within <strong style="color:var(--text);">1–2 business days.</strong></span></li>
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-weight:700;min-width:20px;font-family:'DM Mono',monospace;font-size:.8rem;margin-top:3px;">02</span><span style="color:var(--muted);font-size:.9rem;">Our editorial team drafts your story and sends it for your approval.</span></li>
+<li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--gold);font-weight:700;min-width:20px;font-family:'DM Mono',monospace;font-size:.8rem;margin-top:3px;">03</span><span style="color:var(--muted);font-size:.9rem;">Your feature goes live on Worldwide Press and is shared across our platforms.</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="pricing">
+<div class="container">
+<h2 class="section-title">Publishing <em>Packages</em></h2>
+<div class="grid pricing-grid">
+<div class="card" style="border-color:rgba(201,168,76,.3);">
+<div class="badge-free">Free Forever</div>
+<small>Hustler</small>
+<h3>Basic Listing</h3>
+<div class="price" style="font-size:2.4rem;">$0</div>
+<ul class="features">
+<li>Profile Page Listed</li>
+<li>Community Feed Post</li>
+<li>1 Social Share</li>
+</ul>
+<button class="btn btn-outline" onclick="document.getElementById('openAuthBtn').click()" style="width:100%;margin-top:18px;font-size:.78rem;">Get Started Free</button>
+</div>
+<div class="card">
+<small>Starter</small>
+<h3>Quick Feature</h3>
+<div class="price">$10</div>
+<ul class="features">
+<li>Editorial Story</li>
+<li>Homepage Placement</li>
+<li>Social Caption</li>
+</ul>
+<div id="paypal-basic"></div>
+</div>
+<div class="card">
+<small>Creator</small>
+<h3>Press Campaign</h3>
+<div class="price">$25</div>
+<ul class="features">
+<li>Feature Story</li>
+<li>Interview Writeup</li>
+<li>Social Promotion</li>
+</ul>
+<div id="paypal-pro"></div>
+</div>
+<div class="card">
+<small>Magazine</small>
+<h3>Brand Package</h3>
+<div class="price">$60</div>
+<ul class="features">
+<li>Digital Magazine</li>
+<li>Press Kit</li>
+<li>Creative Direction</li>
+</ul>
+<div id="paypal-brand"></div>
+</div>
+</div>
+</div>
+</section>
+<footer>
+<div class="container">
+<a href="index.html" style="color:inherit;text-decoration:none;">Worldwide Entertainment Group</a> · Worldwide Press Publishing · Powered by Firebase &amp; PayPal
+</div>
+</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAM-MCnaZ9dxrpYKSi1XYbGOOqJiBVUZPo",
+  authDomain: "wwe-portal-d24a0.firebaseapp.com",
+  projectId: "wwe-portal-d24a0",
+  storageBucket: "wwe-portal-d24a0.firebasestorage.app",
+  messagingSenderId: "183897642302",
+  appId: "1:183897642302:web:dc14213d2dc89155acc86f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ── Modal helpers ───────────────────── */
+const backdrop   = document.getElementById("authModal");
+const openBtn    = document.getElementById("openAuthBtn");
+const openInline = document.getElementById("openAuthInline");
+const closeBtn   = document.getElementById("closeModal");
+const tabLogin   = document.getElementById("tabLogin");
+const tabSignup  = document.getElementById("tabSignup");
+const loginForm  = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+
+function openModal(tab = "login") {
+  backdrop.classList.add("open");
+  showTab(tab);
+}
+function closeModal() {
+  backdrop.classList.remove("open");
+}
+function showTab(tab) {
+  if (tab === "login") {
+    loginForm.style.display = "grid";
+    signupForm.style.display = "none";
+    tabLogin.classList.add("active");
+    tabSignup.classList.remove("active");
+  } else {
+    loginForm.style.display = "none";
+    signupForm.style.display = "grid";
+    tabLogin.classList.remove("active");
+    tabSignup.classList.add("active");
+  }
+}
+
+openBtn.addEventListener("click", e => { e.preventDefault(); openModal("login"); });
+if (openInline) openInline.addEventListener("click", e => { e.preventDefault(); openModal("login"); });
+closeBtn.addEventListener("click", closeModal);
+backdrop.addEventListener("click", e => { if (e.target === backdrop) closeModal(); });
+tabLogin.addEventListener("click", () => showTab("login"));
+tabSignup.addEventListener("click", () => showTab("signup"));
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 4000);
+}
+function showSuccess(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add("show");
+}
+
+/* ── Login ───────────────────────────── */
+document.getElementById("loginSubmitBtn").addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass  = document.getElementById("loginPassword").value;
+  if (!email || !pass) return showError("loginError", "Please enter your email and password.");
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    showSuccess("loginSuccess", "Signed in! Welcome back.");
+    setTimeout(closeModal, 1200);
+  } catch(err) {
+    showError("loginError", err.message.replace("Firebase: ", "").replace(/ \(auth.*\)/, ""));
+  }
+});
+
+/* ── Sign Up ─────────────────────────── */
+document.getElementById("signupSubmitBtn").addEventListener("click", async () => {
+  const name  = document.getElementById("signupName").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const pass  = document.getElementById("signupPassword").value;
+  if (!name || !email || !pass) return showError("signupError", "Please fill in all fields.");
+  if (pass.length < 6) return showError("signupError", "Password must be at least 6 characters.");
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+    showSuccess("signupSuccess", "Account created! You're now signed in.");
+    setTimeout(closeModal, 1400);
+  } catch(err) {
+    showError("signupError", err.message.replace("Firebase: ", "").replace(/ \(auth.*\)/, ""));
+  }
+});
+
+/* ── Auth state ──────────────────────── */
+const userPill  = document.getElementById("userPill");
+const userEmail = document.getElementById("userEmail");
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    userPill.classList.add("visible");
+    userEmail.textContent = user.email;
+    openBtn.style.display = "none";
+  } else {
+    userPill.classList.remove("visible");
+    openBtn.style.display = "";
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+/* ── Submission form ─────────────────── */
+document.getElementById("submissionForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await addDoc(collection(db, "submissions"), {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      type: document.getElementById("type").value,
+      instagram: document.getElementById("instagram").value,
+      drive: document.getElementById("drive").value,
+      dropbox: document.getElementById("dropbox").value,
+      youtube: document.getElementById("youtube").value,
+      message: document.getElementById("message").value,
+      userId: auth.currentUser ? auth.currentUser.uid : "guest",
+      createdAt: new Date()
+    });
+    alert("Submission sent successfully!");
+    document.getElementById("submissionForm").reset();
+  } catch(err) {
+    alert(err.message);
+  }
+});
+</script>
+<script>
+function renderPayPal(id, amount){
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{ amount: { value: amount } }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('Payment completed by ' + details.payer.name.given_name);
+      });
+    }
+  }).render(id);
+}
+</script>
+<script
+  src="https://www.paypal.com/sdk/js?client-id=AUWIwfxTXod2mZb-e_d6aji9jd61U2v7X5-bmMzW5NzoAAxk0bm-paWQbLMYfN7yR1c1dS8djoyJadZ0"
+  onload="renderPayPal('#paypal-basic','10.00'); renderPayPal('#paypal-pro','25.00'); renderPayPal('#paypal-brand','60.00');">
+</script>
+</body>
+</html>

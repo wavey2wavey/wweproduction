@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — WWE Production Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/portal.css">
+<style>
+.admin-tag{font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;background:rgba(224,92,74,0.15);color:#e05c4a;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid rgba(224,92,74,0.2);}
+.filter-btn{padding:5px 14px;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font-ui);transition:all var(--transition);}
+.filter-btn.active,.filter-btn:hover{border-color:var(--gold-dim);color:var(--gold);background:var(--gold-glow);}
+.action-btns{display:flex;gap:6px;}
+.search-input{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;color:var(--white);font-size:0.82rem;font-family:var(--font-ui);outline:none;width:220px;transition:border-color var(--transition);}
+.search-input:focus{border-color:var(--gold-dim);}
+.search-input::placeholder{color:var(--muted-2);}
+/* earnings edit modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;width:100%;max-width:520px;margin:20px;max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:var(--font-display);font-size:1.4rem;margin-bottom:6px;}
+.modal .sub{font-size:0.78rem;color:var(--muted);margin-bottom:24px;}
+.close-btn{float:right;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;margin-top:-4px;}
+.close-btn:hover{color:var(--white);}
+.platform-row{display:grid;grid-template-columns:1fr 100px 110px;gap:10px;align-items:center;margin-bottom:10px;}
+.platform-row label{font-size:0.78rem;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="portal-wrap">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="label">WWE Production</div>
+      <div class="name">Admin Panel <span class="admin-tag">Admin</span></div>
+      <div class="sub">Distribution Management</div>
+    </div>
+    <div class="sidebar-section-label">Overview</div>
+    <ul class="sidebar-nav">
+      <li><a href="admin.html" class="active"><span class="icon">⬛</span> Dashboard</a></li>
+      <li><a href="#" onclick="showTab('submissions')"><span class="icon">⬆</span> Submissions <span class="badge" id="badge-pending">…</span></a></li>
+      <li><a href="#" onclick="showTab('payouts')"><span class="icon">◈</span> Payouts <span class="badge" id="badge-payouts">…</span></a></li>
+      <li><a href="#" onclick="showTab('artists')"><span class="icon">○</span> Artists</a></li>
+    </ul>
+    <div class="sidebar-section-label">System</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="doSignOut()"><span class="icon">→</span> Sign Out</a></li>
+    </ul>
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="avatar" style="background:rgba(224,92,74,0.12);border-color:rgba(224,92,74,0.3);color:#e05c4a;">WW</div>
+        <div>
+          <div class="user-name">WWE Team</div>
+          <div class="user-role" style="color:#e05c4a;">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="topbar-title">Admin Dashboard</div>
+        <div class="page-sub">Worldwide Entertainment Production — Distribution management</div>
+      </div>
+      <div class="topbar-actions">
+        <input class="search-input" placeholder="Search…" type="text" id="search-input" oninput="doSearch()">
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── STATS ── -->
+      <div class="grid-stats" style="grid-template-columns:repeat(5,1fr);" id="stats-grid">
+        <div class="card"><div class="card-title">Total Artists</div><div class="card-value" id="s-artists">—</div><div class="card-sub">Registered</div></div>
+        <div class="card"><div class="card-title">Live Releases</div><div class="card-value" id="s-live">—</div><div class="card-sub">Across all DSPs</div></div>
+        <div class="card"><div class="card-title">Pending Review</div><div class="card-value text-gold" id="s-pending">—</div><div class="card-sub">Awaiting approval</div></div>
+        <div class="card"><div class="card-title">Payout Requests</div><div class="card-value text-danger" id="s-payouts">—</div><div class="card-sub">Require processing</div></div>
+        <div class="card"><div class="card-title">Total Streams</div><div class="card-value mono" id="s-streams">—</div><div class="card-sub">All artists combined</div></div>
+      </div>
+
+      <!-- ── SUBMISSIONS TAB ── -->
+      <div id="tab-submissions" class="tab-section">
+        <div class="table-wrap" style="margin-bottom:28px;">
+          <div class="table-header">
+            <h3>Submissions <span class="badge badge-pending" id="sub-count-badge" style="margin-left:8px;"></span></h3>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <button class="filter-btn active" onclick="filterSubs('all',this)">All</button>
+              <button class="filter-btn" onclick="filterSubs('pending',this)">Pending</button>
+              <button class="filter-btn" onclick="filterSubs('review',this)">In Review</button>
+              <button class="filter-btn" onclick="filterSubs('live',this)">Approved</button>
+              <button class="filter-btn" onclick="filterSubs('rejected',this)">Rejected</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Ref code</th><th>Artist</th><th>Release title</th><th>Type</th><th>Submitted</th><th>Platforms</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="submissions-tbody">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted-2);padding:32px;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PAYOUTS TAB ── -->
+      <div id="tab-payouts" class="tab-section" style="display:none;">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Payout Requests</h3>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Artist</th><th>Email</th><th>Amount</th><th>Method</th><th>Details</th><th>Requested</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="payouts-tbody">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted-2);padding:32px;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ARTISTS TAB ── -->
+      <div id="tab-artists" class="tab-section" style="display:none;">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>All Artists</h3>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Joined</th><th>Releases</th><th>Available Balance</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="artists-tbody">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted-2);padding:32px;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- EARNINGS EDIT MODAL -->
+<div class="modal-bg" id="earnings-modal" onclick="closeModal(event,'earnings-modal')">
+  <div class="modal">
+    <button class="close-btn" onclick="document.getElementById('earnings-modal').classList.remove('open')">✕</button>
+    <h3>Update Earnings</h3>
+    <div class="sub" id="earnings-modal-artist">Artist</div>
+
+    <div class="form-group">
+      <label class="form-label">Earnings period (e.g. Apr 2026)</label>
+      <input type="text" class="form-input" id="em-period" placeholder="e.g. Apr 2026">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Balances (USD)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="form-label" style="font-size:0.62rem;">Available</label><input type="number" class="form-input mono" id="em-available" step="0.01" min="0" placeholder="0.00"></div>
+        <div><label class="form-label" style="font-size:0.62rem;">Pending</label><input type="number" class="form-input mono" id="em-pending" step="0.01" min="0" placeholder="0.00"></div>
+        <div><label class="form-label" style="font-size:0.62rem;">All Time Earned</label><input type="number" class="form-input mono" id="em-alltime" step="0.01" min="0" placeholder="0.00"></div>
+        <div><label class="form-label" style="font-size:0.62rem;">Total Withdrawn</label><input type="number" class="form-input mono" id="em-withdrawn" step="0.01" min="0" placeholder="0.00"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Platform Breakdown</label>
+      <div id="platform-rows">
+        <!-- dynamically generated -->
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="addPlatformRow()">+ Add platform</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Total Streams (all releases)</label>
+      <input type="number" class="form-input mono" id="em-streams" min="0" placeholder="0">
+    </div>
+
+    <div id="em-error" class="alert alert-danger" style="display:none;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('earnings-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="saveEarnings()">Save Earnings →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyD8wZX68esulLD9jVks8yXdFInwE0u9xbU",
+  authDomain:        "wwe-production-portal.firebaseapp.com",
+  projectId:         "wwe-production-portal",
+  storageBucket:     "wwe-production-portal.firebasestorage.app",
+  messagingSenderId: "528766558179",
+  appId:             "1:528766558179:web:3fd607894ad276bdb98ad6"
+};
+const ADMIN_EMAIL = "wwemediagroup21@gmail.com";
+// ─────────────────────────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let allSubmissions = [];
+let allPayouts     = [];
+let allArtists     = [];
+let currentFilter  = 'all';
+let editingArtistUid = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (user.email !== ADMIN_EMAIL) { window.location.href = 'dashboard.html'; return; }
+  loadAll();
+});
+
+async function loadAll() {
+  // Artists
+  const as = await getDocs(collection(db, 'artists'));
+  allArtists = [];
+  as.forEach(d => allArtists.push({id:d.id,...d.data()}));
+
+  // Releases
+  const rs = await getDocs(query(collection(db,'releases'), orderBy('submittedAt','desc')));
+  allSubmissions = [];
+  rs.forEach(d => allSubmissions.push({id:d.id,...d.data()}));
+
+  // Payouts
+  const ps = await getDocs(query(collection(db,'payouts'), orderBy('requestedAt','desc')));
+  allPayouts = [];
+  ps.forEach(d => allPayouts.push({id:d.id,...d.data()}));
+
+  updateStats();
+  renderSubmissions('all');
+  renderPayouts();
+  renderArtists();
+}
+
+function updateStats() {
+  const live    = allSubmissions.filter(r=>r.status==='live').length;
+  const pending = allSubmissions.filter(r=>r.status==='pending'||r.status==='review').length;
+  const payoutP = allPayouts.filter(p=>p.status==='pending').length;
+  const streams = allArtists.reduce((s,a)=>s+(a.totalStreams||0),0);
+
+  document.getElementById('s-artists').textContent = allArtists.length;
+  document.getElementById('s-live').textContent    = live;
+  document.getElementById('s-pending').textContent = pending;
+  document.getElementById('s-payouts').textContent = payoutP;
+  document.getElementById('s-streams').textContent = streams > 1000 ? (streams/1000).toFixed(1)+'K' : streams;
+  document.getElementById('badge-pending').textContent = pending;
+  document.getElementById('badge-payouts').textContent = payoutP;
+}
+
+function renderSubmissions(filter) {
+  currentFilter = filter;
+  let rows = allSubmissions;
+  if (filter !== 'all') rows = rows.filter(r => r.status === filter);
+  const q = document.getElementById('search-input').value.toLowerCase();
+  if (q) rows = rows.filter(r => (r.title||'').toLowerCase().includes(q)||(r.artist||'').toLowerCase().includes(q));
+
+  document.getElementById('sub-count-badge').textContent = rows.length + ' submissions';
+  const tbody = document.getElementById('submissions-tbody');
+  if (rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted-2);padding:32px;">No submissions found</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const date = r.submittedAt ? new Date(r.submittedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const badgeClass = {live:'badge-live',pending:'badge-pending',review:'badge-review',rejected:'badge-rejected'}[r.status]||'badge-draft';
+    const statusLabel = {live:'Approved',pending:'Pending',review:'In Review',rejected:'Rejected'}[r.status]||r.status;
+    const platforms = r.platforms ? r.platforms.length+' platforms' : '—';
+    const actions = r.status === 'live' || r.status === 'rejected' ? `<span style="font-size:0.75rem;color:var(--muted);">${r.status==='live'?'✓ Approved':'✕ Rejected'}</span>` : `
+      <div class="action-btns">
+        <button class="btn btn-sm" style="background:rgba(76,175,130,0.15);color:#4caf82;border:1px solid rgba(76,175,130,0.2);" onclick="updateReleaseStatus('${r.id}','live')">Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="updateReleaseStatus('${r.id}','rejected')">Reject</button>
+        ${r.status==='pending'?`<button class="btn btn-ghost btn-sm" onclick="updateReleaseStatus('${r.id}','review')">Review</button>`:''}
+      </div>`;
+    return `<tr>
+      <td><span class="mono text-muted" style="font-size:0.75rem;">${r.refCode||'—'}</span></td>
+      <td><strong>${r.artist||r.artistEmail||'—'}</strong></td>
+      <td>${r.title||'—'}</td>
+      <td><span style="color:var(--muted);font-size:0.78rem;">${r.type||'—'}</span></td>
+      <td><span style="color:var(--muted);font-size:0.78rem;">${date}</span></td>
+      <td><span style="color:var(--muted);font-size:0.78rem;">${platforms}</span></td>
+      <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
+      <td>${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderPayouts() {
+  const tbody = document.getElementById('payouts-tbody');
+  if (allPayouts.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted-2);padding:32px;">No payout requests</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = allPayouts.map(p => {
+    const date = p.requestedAt ? new Date(p.requestedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const badgeClass = {paid:'badge-live',processing:'badge-review',pending:'badge-pending'}[p.status]||'badge-draft';
+    const details = p.details ? Object.values(p.details).filter(Boolean).join(' · ') : '—';
+    const action = p.status==='paid' ? `<span class="badge badge-live">Paid</span>` :
+      `<button class="btn btn-sm" style="background:rgba(76,175,130,0.15);color:#4caf82;border:1px solid rgba(76,175,130,0.2);" onclick="markPaid('${p.id}')">Mark Paid</button>`;
+    return `<tr>
+      <td><strong>${p.artistEmail||'—'}</strong></td>
+      <td><span style="font-size:0.78rem;color:var(--muted);">${p.artistEmail||'—'}</span></td>
+      <td><span class="mono">$${(p.amount||0).toFixed(2)}</span></td>
+      <td><span style="font-size:0.78rem;color:var(--muted);">${p.method||'—'}</span></td>
+      <td><span style="font-size:0.75rem;color:var(--muted);">${details}</span></td>
+      <td><span style="font-size:0.78rem;color:var(--muted);">${date}</span></td>
+      <td><span class="badge ${badgeClass}">${p.status||'—'}</span></td>
+      <td>${action}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderArtists() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let artists = allArtists;
+  if (q) artists = artists.filter(a => (a.name||'').toLowerCase().includes(q)||(a.email||'').toLowerCase().includes(q));
+  const tbody = document.getElementById('artists-tbody');
+  if (artists.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted-2);padding:32px;">No artists yet</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = artists.map(a => {
+    const joined  = a.joinedAt ? new Date(a.joinedAt).toLocaleDateString('en-KE',{month:'short',year:'numeric'}) : '—';
+    const releases = allSubmissions.filter(r=>r.artistUid===a.uid||r.artistUid===a.id).length;
+    const balance  = a.earnings ? a.earnings.available : 0;
+    return `<tr>
+      <td><strong>${a.name||'—'}</strong></td>
+      <td><span style="font-size:0.78rem;color:var(--muted);">${a.email||'—'}</span></td>
+      <td><span style="font-size:0.78rem;color:var(--muted);">${joined}</span></td>
+      <td>${releases}</td>
+      <td><span class="mono text-${balance>=20?'success':'muted'}">$${(balance||0).toFixed(2)}</span></td>
+      <td><span class="badge badge-live">Active</span></td>
+      <td>
+        <button class="btn btn-sm btn-ghost" onclick="openEarningsModal('${a.uid||a.id}','${(a.name||'').replace(/'/g,"\\'")}')">Edit Earnings</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── ACTIONS ──────────────────────────────────────────────────────────────────
+
+window.updateReleaseStatus = async function(releaseId, status) {
+  await updateDoc(doc(db,'releases',releaseId), { status, updatedAt: new Date().toISOString() });
+  const idx = allSubmissions.findIndex(r=>r.id===releaseId);
+  if (idx > -1) allSubmissions[idx].status = status;
+  updateStats();
+  renderSubmissions(currentFilter);
+};
+
+window.markPaid = async function(payoutId) {
+  await updateDoc(doc(db,'payouts',payoutId), { status:'paid', paidAt: new Date().toISOString() });
+  const idx = allPayouts.findIndex(p=>p.id===payoutId);
+  if (idx > -1) allPayouts[idx].status = 'paid';
+  updateStats();
+  renderPayouts();
+};
+
+window.openEarningsModal = async function(uid, name) {
+  editingArtistUid = uid;
+  document.getElementById('earnings-modal-artist').textContent = name;
+  document.getElementById('em-error').style.display = 'none';
+
+  const snap = await getDoc(doc(db,'artists',uid));
+  const a = snap.exists() ? snap.data() : {};
+  const e = a.earnings || {};
+  document.getElementById('em-period').value    = a.earningsPeriod || '';
+  document.getElementById('em-available').value = e.available  || 0;
+  document.getElementById('em-pending').value   = e.pending    || 0;
+  document.getElementById('em-alltime').value   = e.allTime    || 0;
+  document.getElementById('em-withdrawn').value = e.withdrawn  || 0;
+  document.getElementById('em-streams').value   = a.totalStreams || 0;
+
+  // Platform rows
+  const pRows = document.getElementById('platform-rows');
+  pRows.innerHTML = '';
+  const platforms = a.platformEarnings || [];
+  if (platforms.length === 0) {
+    ['Spotify','Apple Music','Audiomack','Boomplay','YouTube Music'].forEach(p => addPlatformRow(p, 0, 0));
+  } else {
+    platforms.forEach(p => addPlatformRow(p.platform, p.amount, p.streams));
+  }
+
+  document.getElementById('earnings-modal').classList.add('open');
+};
+
+window.addPlatformRow = function(platform='', amount='', streams='') {
+  const row = document.createElement('div');
+  row.className = 'platform-row';
+  row.innerHTML = `
+    <input type="text" class="form-input pr-platform" placeholder="Platform name" value="${platform}" style="margin:0;">
+    <input type="number" class="form-input mono pr-amount" placeholder="$0.00" value="${amount}" step="0.01" min="0" style="margin:0;">
+    <input type="number" class="form-input mono pr-streams" placeholder="streams" value="${streams}" min="0" style="margin:0;">`;
+  document.getElementById('platform-rows').appendChild(row);
+};
+
+window.saveEarnings = async function() {
+  if (!editingArtistUid) return;
+  const errEl = document.getElementById('em-error');
+  errEl.style.display='none';
+
+  const period    = document.getElementById('em-period').value;
+  const available = parseFloat(document.getElementById('em-available').value)||0;
+  const pending   = parseFloat(document.getElementById('em-pending').value)||0;
+  const allTime   = parseFloat(document.getElementById('em-alltime').value)||0;
+  const withdrawn = parseFloat(document.getElementById('em-withdrawn').value)||0;
+  const streams   = parseInt(document.getElementById('em-streams').value)||0;
+
+  const platformEarnings = Array.from(document.querySelectorAll('.platform-row')).map(row => ({
+    platform: row.querySelector('.pr-platform').value,
+    amount:   parseFloat(row.querySelector('.pr-amount').value)||0,
+    streams:  parseInt(row.querySelector('.pr-streams').value)||0,
+  })).filter(p => p.platform);
+
+  try {
+    await updateDoc(doc(db,'artists',editingArtistUid), {
+      earnings: { available, pending, allTime, withdrawn },
+      platformEarnings,
+      earningsPeriod: period,
+      totalStreams: streams,
+    });
+
+    // Update local cache
+    const idx = allArtists.findIndex(a=>(a.uid||a.id)===editingArtistUid);
+    if (idx>-1) {
+      allArtists[idx].earnings = { available, pending, allTime, withdrawn };
+      allArtists[idx].totalStreams = streams;
+    }
+
+    document.getElementById('earnings-modal').classList.remove('open');
+    updateStats();
+    renderArtists();
+
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success';
+    alert.innerHTML = '<span>✓</span><span>Earnings updated successfully. The artist will see the new figures immediately.</span>';
+    document.querySelector('.content').prepend(alert);
+    setTimeout(()=>alert.remove(), 5000);
+  } catch(e) {
+    errEl.style.display='flex';
+    errEl.innerHTML=`<span>⚠</span><span>Error saving: ${e.message}</span>`;
+  }
+};
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+
+window.showTab = function(tab) {
+  ['submissions','payouts','artists'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+  });
+  const titles = {submissions:'Submissions',payouts:'Payout Requests',artists:'Artists'};
+  document.getElementById('topbar-title').textContent = titles[tab] || 'Admin Dashboard';
+};
+
+window.filterSubs = function(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSubmissions(filter);
+};
+
+window.doSearch = function() {
+  renderSubmissions(currentFilter);
+  renderArtists();
+};
+
+window.closeModal = function(e, id) {
+  if (e.target.id===id) document.getElementById(id).classList.remove('open');
+};
+
+window.doSignOut = async function() { await signOut(auth); window.location.href='login.html'; };
+</script>
+</body>
+</html>

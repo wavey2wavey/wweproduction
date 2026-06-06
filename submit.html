@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Release — WWE Production Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/portal.css">
+<style>
+.step-panel{display:none}.step-panel.active{display:block}
+.art-preview{width:160px;height:160px;border-radius:8px;background:var(--surface-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;overflow:hidden;}
+.art-preview img{width:100%;height:100%;object-fit:cover;}
+.track-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;}
+.track-num{font-family:var(--font-mono);font-size:0.7rem;color:var(--muted-2);width:20px;flex-shrink:0;}
+.track-info{flex:1}
+.track-title{font-size:0.85rem;font-weight:600;}
+.track-meta{font-size:0.7rem;color:var(--muted);}
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.platform-check{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all var(--transition);font-size:0.82rem;font-weight:500;}
+.platform-check:has(input:checked){border-color:var(--gold-dim);background:var(--gold-glow);color:var(--gold);}
+.platform-check input{accent-color:var(--gold);}
+.review-block{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px;}
+.review-block .rb-label{font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-2);margin-bottom:6px;font-weight:700;}
+.review-block .rb-value{font-size:0.875rem;color:var(--white);font-weight:500;}
+.submit-success{text-align:center;padding:64px 24px;max-width:480px;margin:0 auto;}
+.submit-success .success-ring{width:80px;height:80px;border-radius:50%;background:rgba(76,175,130,0.1);border:1.5px solid rgba(76,175,130,0.3);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 28px;color:var(--success);}
+.submit-success h2{font-family:var(--font-display);font-size:2rem;margin-bottom:14px;}
+.submit-success p{font-size:0.875rem;color:var(--muted);line-height:1.7;}
+.ref-code{font-family:var(--font-mono);font-size:0.8rem;background:var(--surface-2);border:1px solid var(--border);padding:8px 16px;border-radius:var(--radius);color:var(--gold);display:inline-block;margin:20px 0;letter-spacing:0.1em;}
+.form-section-title{font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.agree-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;font-size:0.82rem;color:var(--muted);}
+.agree-row input{margin-top:3px;flex-shrink:0;accent-color:var(--gold);}
+.agree-row a{color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="portal-wrap">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="label">WWE Production</div>
+      <div class="name">Artist Portal</div>
+      <div class="sub">Distribution Platform</div>
+    </div>
+    <div class="sidebar-section-label">Main</div>
+    <ul class="sidebar-nav">
+      <li><a href="dashboard.html"><span class="icon">⬛</span> Dashboard</a></li>
+      <li><a href="submit.html" class="active"><span class="icon">⬆</span> Submit Release <span class="badge">New</span></a></li>
+      <li><a href="earnings.html"><span class="icon">◈</span> Earnings</a></li>
+    </ul>
+    <div class="sidebar-section-label">Account</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="doSignOut()"><span class="icon">→</span> Sign Out</a></li>
+    </ul>
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="avatar" id="user-avatar">--</div>
+        <div>
+          <div class="user-name" id="user-name">Loading…</div>
+          <div class="user-role">Artist · Active</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Submit Release</div>
+        <div class="page-sub">New music distribution submission</div>
+      </div>
+      <div class="topbar-actions">
+        <a href="dashboard.html" class="btn btn-ghost">Cancel</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="steps" id="step-indicator">
+        <div class="step active" id="si-1"><div class="step-num">1</div><div class="step-label">Release Info</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="si-2"><div class="step-num">2</div><div class="step-label">Tracks</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="si-3"><div class="step-num">3</div><div class="step-label">Platforms</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="si-4"><div class="step-num">4</div><div class="step-label">Review & Submit</div></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step-panel active" id="panel-1">
+        <div class="card">
+          <div class="form-section-title">Release Information</div>
+          <div style="display:flex;gap:24px;align-items:flex-start;margin-bottom:28px;">
+            <div>
+              <div class="art-preview" id="art-preview">🎵</div>
+              <label class="btn btn-ghost btn-sm" style="margin-top:10px;display:block;text-align:center;cursor:pointer;">
+                Upload Cover Art
+                <input type="file" accept="image/*" style="display:none" onchange="previewArt(this)">
+              </label>
+              <div class="form-hint" style="text-align:center;margin-top:4px;">3000×3000px min</div>
+            </div>
+            <div style="flex:1;">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Release title <span>*</span></label>
+                  <input type="text" class="form-input" id="s1-title" placeholder="e.g. Nairobi Nights">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Release type <span>*</span></label>
+                  <select class="form-select" id="s1-type">
+                    <option value="Single">Single (1 track)</option>
+                    <option value="EP">EP (2–6 tracks)</option>
+                    <option value="Album">Album (7+ tracks)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Primary artist name <span>*</span></label>
+                  <input type="text" class="form-input" id="s1-artist" placeholder="As listed on DSPs">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Featured artists</label>
+                  <input type="text" class="form-input" id="s1-features" placeholder="Optional — commas">
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Primary genre <span>*</span></label>
+                  <select class="form-select" id="s1-genre">
+                    <option value="" disabled selected>Select genre</option>
+                    <option>Afrobeats</option><option>Gengetone</option><option>Bongo Flava</option>
+                    <option>Afro Hip-Hop</option><option>R&B / Soul</option><option>Gospel</option>
+                    <option>Dance / Electronic</option><option>Reggae</option><option>Pop</option>
+                    <option>Drill</option><option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Release date <span>*</span></label>
+                  <input type="date" class="form-input" id="s1-date">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Label name</label>
+              <input type="text" class="form-input" id="s1-label" value="WWE Production">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Language</label>
+              <select class="form-select" id="s1-language">
+                <option>English</option><option>Swahili</option><option>Sheng</option>
+                <option>French</option><option>Yoruba</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes for the WWE team</label>
+            <textarea class="form-textarea" id="s1-notes" placeholder="Background, rollout plans, special instructions…"></textarea>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+            <button class="btn btn-primary" onclick="goStep(2)">Continue: Tracks →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-panel" id="panel-2">
+        <div class="card">
+          <div class="form-section-title">Track Information</div>
+          <div class="alert alert-info" style="margin-bottom:20px;">
+            <span>ℹ</span>
+            <span>List your track names below. WWE Production will contact you for audio files via email after submission.</span>
+          </div>
+          <div id="track-list"></div>
+          <button class="btn btn-ghost btn-sm" onclick="addTrackField()" style="margin-bottom:20px;">+ Add Track</button>
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+            <button class="btn btn-primary" onclick="goStep(3)">Continue: Platforms →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-panel" id="panel-3">
+        <div class="card">
+          <div class="form-section-title">Distribution Platforms</div>
+          <p style="font-size:0.85rem;color:var(--muted);margin-bottom:24px;">Select which platforms to distribute to.</p>
+          <div class="form-group">
+            <label class="form-label">Global Platforms</label>
+            <div class="platform-grid">
+              <label class="platform-check"><input type="checkbox" value="Spotify" checked> Spotify</label>
+              <label class="platform-check"><input type="checkbox" value="Apple Music" checked> Apple Music</label>
+              <label class="platform-check"><input type="checkbox" value="Amazon Music" checked> Amazon Music</label>
+              <label class="platform-check"><input type="checkbox" value="Tidal" checked> Tidal</label>
+              <label class="platform-check"><input type="checkbox" value="Deezer" checked> Deezer</label>
+              <label class="platform-check"><input type="checkbox" value="YouTube Music" checked> YouTube Music</label>
+              <label class="platform-check"><input type="checkbox" value="Pandora"> Pandora</label>
+              <label class="platform-check"><input type="checkbox" value="Shazam" checked> Shazam</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Africa-focused Platforms</label>
+            <div class="platform-grid">
+              <label class="platform-check"><input type="checkbox" value="Audiomack" checked> Audiomack</label>
+              <label class="platform-check"><input type="checkbox" value="Boomplay" checked> Boomplay</label>
+              <label class="platform-check"><input type="checkbox" value="Mdundo"> Mdundo</label>
+              <label class="platform-check"><input type="checkbox" value="Aftown"> Aftown</label>
+            </div>
+          </div>
+          <div class="form-grid" style="margin-top:20px;">
+            <div class="form-group">
+              <label class="form-label">Distribution territory</label>
+              <select class="form-select" id="s3-territory">
+                <option>Worldwide (all territories)</option>
+                <option>Africa only</option>
+                <option>East Africa only</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pre-save date</label>
+              <input type="date" class="form-input" id="s3-presave">
+              <div class="form-hint">Optional — set earlier than release date</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
+            <button class="btn btn-primary" onclick="buildReview()">Continue: Review →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-panel" id="panel-4">
+        <div id="review-content">
+          <div class="card" style="margin-bottom:20px;">
+            <div class="form-section-title">Review Your Submission</div>
+            <p style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;">WWE Production will review within 2–3 business days.</p>
+            <div class="review-block"><div class="rb-label">Release title</div><div class="rb-value" id="rv-title">—</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+              <div class="review-block"><div class="rb-label">Type</div><div class="rb-value" id="rv-type">—</div></div>
+              <div class="review-block"><div class="rb-label">Genre</div><div class="rb-value" id="rv-genre">—</div></div>
+              <div class="review-block"><div class="rb-label">Release date</div><div class="rb-value mono" id="rv-date">—</div></div>
+            </div>
+            <div class="review-block"><div class="rb-label">Tracks</div><div class="rb-value" id="rv-tracks">—</div></div>
+            <div class="review-block"><div class="rb-label">Distribution</div><div class="rb-value" id="rv-platforms">—</div></div>
+            <div class="review-block"><div class="rb-label">Notes</div><div class="rb-value" id="rv-notes" style="color:var(--muted);">—</div></div>
+          </div>
+          <div class="card">
+            <div class="form-section-title">Rights Confirmation</div>
+            <div class="agree-row"><input type="checkbox" id="rights-1"><label for="rights-1">I confirm I am the rights holder or authorised representative for all music submitted.</label></div>
+            <div class="agree-row"><input type="checkbox" id="rights-2"><label for="rights-2">This release does not contain uncleared samples or copyrighted material.</label></div>
+            <div class="agree-row"><input type="checkbox" id="rights-3"><label for="rights-3">I agree to the WWE Production Distribution Agreement and understand that WWE Production will deduct the agreed fee from royalties earned.</label></div>
+            <div id="submit-error" style="display:none;" class="alert alert-danger" style="margin-top:12px;"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:24px;align-items:center;">
+              <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
+              <button class="btn btn-primary" style="padding:12px 32px;" id="submit-btn" onclick="submitRelease()">Submit Release →</button>
+            </div>
+          </div>
+        </div>
+        <div class="submit-success" id="submit-success" style="display:none;">
+          <div class="success-ring">✓</div>
+          <h2>Release submitted.</h2>
+          <p>Your release is now in WWE Production's review queue. Our team will be in touch within 2–3 business days.</p>
+          <div class="ref-code" id="ref-code">WWE-2026-00000</div>
+          <p style="margin-bottom:28px;">Save this reference code for any follow-up enquiries.</p>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <a href="dashboard.html" class="btn btn-primary">Back to Dashboard →</a>
+            <a href="submit.html" class="btn btn-ghost" onclick="location.reload()">Submit Another</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyD8wZX68esulLD9jVks8yXdFInwE0u9xbU",
+  authDomain:        "wwe-production-portal.firebaseapp.com",
+  projectId:         "wwe-production-portal",
+  storageBucket:     "wwe-production-portal.firebasestorage.app",
+  messagingSenderId: "528766558179",
+  appId:             "1:528766558179:web:3fd607894ad276bdb98ad6"
+};
+const ADMIN_EMAIL = "wwemediagroup21@gmail.com";
+// ─────────────────────────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let currentUser = null;
+let trackCount  = 1;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (user.email === ADMIN_EMAIL) { window.location.href = 'admin.html'; return; }
+  currentUser = user;
+
+  const snap = await getDoc(doc(db, 'artists', user.uid));
+  const artist = snap.exists() ? snap.data() : { name: user.email };
+  const initials = (artist.name||'AR').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name').textContent   = artist.name || user.email;
+  document.getElementById('s1-artist').value = artist.name || '';
+
+  // Add first track field
+  addTrackField();
+});
+
+window.doSignOut = async function() { await signOut(auth); window.location.href = 'login.html'; };
+
+window.goStep = function(n) {
+  document.querySelectorAll('.step-panel').forEach((p,i) => p.classList.toggle('active', i+1===n));
+  for (let i=1;i<=4;i++) {
+    const el = document.getElementById('si-'+i);
+    el.classList.remove('active','done');
+    if (i<n) el.classList.add('done');
+    if (i===n) el.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+window.previewArt = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('art-preview').innerHTML = `<img src="${e.target.result}" alt="Cover art">`;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.addTrackField = function() {
+  const list = document.getElementById('track-list');
+  const n = list.querySelectorAll('.track-row').length + 1;
+  const row = document.createElement('div');
+  row.className = 'track-row';
+  row.innerHTML = `
+    <div class="track-num">0${n}</div>
+    <div class="track-info" style="flex:1;">
+      <input type="text" class="form-input track-name" placeholder="Track title e.g. Nairobi Nights" style="margin:0;">
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="this.closest('.track-row').remove()">Remove</button>`;
+  list.appendChild(row);
+};
+
+window.buildReview = function() {
+  const title    = document.getElementById('s1-title').value || '—';
+  const type     = document.getElementById('s1-type').value;
+  const genre    = document.getElementById('s1-genre').value || '—';
+  const date     = document.getElementById('s1-date').value;
+  const notes    = document.getElementById('s1-notes').value || 'None';
+  const tracks   = Array.from(document.querySelectorAll('.track-name')).map(i => i.value).filter(Boolean);
+  const platforms= Array.from(document.querySelectorAll('.platform-check input:checked')).map(i => i.value);
+  const territory= document.getElementById('s3-territory').value;
+
+  document.getElementById('rv-title').textContent     = title;
+  document.getElementById('rv-type').textContent      = type;
+  document.getElementById('rv-genre').textContent     = genre;
+  document.getElementById('rv-date').textContent      = date || '—';
+  document.getElementById('rv-tracks').textContent    = tracks.length ? tracks.join(', ') : '—';
+  document.getElementById('rv-platforms').textContent = `${territory} · ${platforms.length} platforms selected`;
+  document.getElementById('rv-notes').textContent     = notes;
+  goStep(4);
+};
+
+window.submitRelease = async function() {
+  if (!['rights-1','rights-2','rights-3'].every(id => document.getElementById(id).checked)) {
+    const errEl = document.getElementById('submit-error');
+    errEl.style.display = 'flex';
+    errEl.innerHTML = '<span>⚠</span><span>Please confirm all rights declarations before submitting.</span>';
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const title     = document.getElementById('s1-title').value;
+  const type      = document.getElementById('s1-type').value;
+  const artist    = document.getElementById('s1-artist').value;
+  const features  = document.getElementById('s1-features').value;
+  const genre     = document.getElementById('s1-genre').value;
+  const date      = document.getElementById('s1-date').value;
+  const label     = document.getElementById('s1-label').value;
+  const language  = document.getElementById('s1-language').value;
+  const notes     = document.getElementById('s1-notes').value;
+  const tracks    = Array.from(document.querySelectorAll('.track-name')).map(i=>i.value).filter(Boolean);
+  const platforms = Array.from(document.querySelectorAll('.platform-check input:checked')).map(i=>i.value);
+  const territory = document.getElementById('s3-territory').value;
+  const refCode   = 'WWE-' + new Date().getFullYear() + '-' + Math.floor(10000+Math.random()*90000);
+
+  try {
+    await addDoc(collection(db, 'releases'), {
+      refCode, title, type, artist, features, genre,
+      releaseDate: date, label, language, notes, tracks,
+      platforms, territory,
+      artistUid:   currentUser.uid,
+      artistEmail: currentUser.email,
+      status:      'pending',
+      streams:     0,
+      submittedAt: new Date().toISOString(),
+    });
+
+    document.getElementById('ref-code').textContent = refCode;
+    document.getElementById('review-content').style.display = 'none';
+    document.getElementById('submit-success').style.display  = 'block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Submit Release →';
+    const errEl = document.getElementById('submit-error');
+    errEl.style.display = 'flex';
+    errEl.innerHTML = `<span>⚠</span><span>Submission failed: ${e.message}</span>`;
+  }
+};
+</script>
+</body>
+</html>

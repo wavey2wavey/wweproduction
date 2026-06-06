@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earnings — WWE Production Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/portal.css">
+<style>
+.payout-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px);}
+.payout-modal-bg.open{display:flex;}
+.payout-modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;width:100%;max-width:460px;margin:20px;}
+.payout-modal h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:8px;}
+.payout-modal p{font-size:0.82rem;color:var(--muted);margin-bottom:24px;}
+.close-btn{float:right;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;margin-top:-4px;}
+.close-btn:hover{color:var(--white);}
+.earning-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:0.85rem;}
+.earning-row:last-child{border-bottom:none;}
+.earning-platform{color:var(--white);font-weight:500;}
+.earning-streams{color:var(--muted);font-size:0.78rem;font-family:var(--font-mono);}
+.earning-amount{font-family:var(--font-mono);font-size:0.85rem;color:var(--success);}
+</style>
+</head>
+<body>
+<div class="portal-wrap">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="label">WWE Production</div>
+      <div class="name">Artist Portal</div>
+      <div class="sub">Distribution Platform</div>
+    </div>
+    <div class="sidebar-section-label">Main</div>
+    <ul class="sidebar-nav">
+      <li><a href="dashboard.html"><span class="icon">⬛</span> Dashboard</a></li>
+      <li><a href="submit.html"><span class="icon">⬆</span> Submit Release <span class="badge">New</span></a></li>
+      <li><a href="earnings.html" class="active"><span class="icon">◈</span> Earnings</a></li>
+    </ul>
+    <div class="sidebar-section-label">Account</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="doSignOut()"><span class="icon">→</span> Sign Out</a></li>
+    </ul>
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="avatar" id="user-avatar">--</div>
+        <div>
+          <div class="user-name" id="user-name">Loading…</div>
+          <div class="user-role">Artist · Active</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Earnings</div>
+        <div class="page-sub">Royalties and payout management</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" id="payout-open-btn" onclick="document.getElementById('payout-modal').classList.add('open')" disabled>Request Payout</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="alert alert-warn">
+        <span>⚠</span>
+        <span>Streaming data is updated monthly by the WWE Production team. Figures shown reflect your confirmed earnings. May data will be available by 15 June 2026.</span>
+      </div>
+
+      <div class="grid-stats">
+        <div class="card">
+          <div class="card-title">Available Balance</div>
+          <div class="card-value mono" id="stat-available">$0.00</div>
+          <div class="card-sub">Ready to withdraw</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Pending</div>
+          <div class="card-value mono" id="stat-pending">$0.00</div>
+          <div class="card-sub">Being processed</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Total Earned (All Time)</div>
+          <div class="card-value mono" id="stat-alltime">$0.00</div>
+          <div class="card-sub">Since first release</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Total Withdrawn</div>
+          <div class="card-value mono" id="stat-withdrawn">$0.00</div>
+          <div class="card-sub" id="stat-payout-count">0 payouts completed</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+        <!-- Earnings by platform (set by admin) -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Earnings by Platform</h3>
+            <span style="font-size:0.72rem;color:var(--muted);" id="earnings-period">—</span>
+          </div>
+          <div style="padding:0 24px 16px;" id="platform-earnings">
+            <div style="padding:24px 0;text-align:center;color:var(--muted-2);font-size:0.82rem;">No earnings data yet. The WWE team will update this each month.</div>
+          </div>
+          <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.75rem;color:var(--muted);">Month total</span>
+            <span class="mono" style="font-size:0.9rem;color:var(--white);font-weight:600;" id="month-total">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Payout history -->
+        <div class="table-wrap">
+          <div class="table-header"><h3>Payout History</h3></div>
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr>
+            </thead>
+            <tbody id="payout-tbody">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted-2);font-size:0.78rem;padding:24px;">No payouts yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div style="margin-top:24px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:0.78rem;color:var(--muted);line-height:1.7;">
+        <strong style="color:var(--white);">About your earnings:</strong> WWE Production deducts the agreed distribution fee before displaying your available balance. All figures shown are your net share. Minimum payout threshold is $20.00 USD. Payouts are processed within 5–7 business days via M-PESA or bank transfer.
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- PAYOUT MODAL -->
+<div class="payout-modal-bg" id="payout-modal" onclick="closePayout(event)">
+  <div class="payout-modal">
+    <button class="close-btn" onclick="document.getElementById('payout-modal').classList.remove('open')">✕</button>
+    <h3>Request Payout</h3>
+    <p>Available balance: <strong style="color:var(--success);font-family:var(--font-mono);" id="modal-balance">$0.00</strong> · Minimum $20.00</p>
+
+    <div class="form-group">
+      <label class="form-label">Payout method <span>*</span></label>
+      <select class="form-select" id="payout-method" onchange="togglePayoutFields()">
+        <option value="mpesa">M-PESA (Kenya)</option>
+        <option value="bank">Bank Transfer</option>
+        <option value="wise">Wise</option>
+        <option value="paypal">PayPal</option>
+      </select>
+    </div>
+
+    <div id="mpesa-fields">
+      <div class="form-group">
+        <label class="form-label">M-PESA number <span>*</span></label>
+        <input type="tel" class="form-input" id="mpesa-num" placeholder="+254 7XX XXX XXX">
+      </div>
+      <div class="form-group">
+        <label class="form-label">M-PESA name</label>
+        <input type="text" class="form-input" id="mpesa-name" placeholder="Full name on M-PESA account">
+      </div>
+    </div>
+    <div id="bank-fields" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Bank name <span>*</span></label>
+        <input type="text" class="form-input" id="bank-name" placeholder="e.g. Equity Bank Kenya">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account number <span>*</span></label>
+        <input type="text" class="form-input mono" id="bank-acc">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account name <span>*</span></label>
+        <input type="text" class="form-input" id="bank-accname">
+      </div>
+    </div>
+    <div id="wise-fields" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Wise email / account <span>*</span></label>
+        <input type="text" class="form-input" id="wise-acc" placeholder="Your Wise email">
+      </div>
+    </div>
+    <div id="paypal-fields" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">PayPal email <span>*</span></label>
+        <input type="email" class="form-input" id="paypal-email" placeholder="Your PayPal email">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Amount (USD) <span>*</span></label>
+      <input type="number" class="form-input mono" id="payout-amount" placeholder="0.00" min="20" step="0.01">
+      <div class="form-hint" id="payout-amount-hint">Min: $20.00</div>
+    </div>
+
+    <div id="payout-modal-error" class="alert alert-danger" style="display:none;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('payout-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary" style="flex:2;" id="payout-submit-btn" onclick="submitPayout()">Submit Request →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, getDocs, updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyD8wZX68esulLD9jVks8yXdFInwE0u9xbU",
+  authDomain:        "wwe-production-portal.firebaseapp.com",
+  projectId:         "wwe-production-portal",
+  storageBucket:     "wwe-production-portal.firebasestorage.app",
+  messagingSenderId: "528766558179",
+  appId:             "1:528766558179:web:3fd607894ad276bdb98ad6"
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let currentUser   = null;
+let availableBalance = 0;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+
+  const artistSnap = await getDoc(doc(db, 'artists', user.uid));
+  const artist = artistSnap.exists() ? artistSnap.data() : {};
+  const initials = (artist.name||'AR').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name').textContent   = artist.name || user.email;
+
+  const earnings = artist.earnings || { available:0, pending:0, allTime:0, withdrawn:0 };
+  availableBalance = earnings.available || 0;
+
+  document.getElementById('stat-available').textContent  = '$' + availableBalance.toFixed(2);
+  document.getElementById('stat-pending').textContent    = '$' + (earnings.pending||0).toFixed(2);
+  document.getElementById('stat-alltime').textContent    = '$' + (earnings.allTime||0).toFixed(2);
+  document.getElementById('stat-withdrawn').textContent  = '$' + (earnings.withdrawn||0).toFixed(2);
+  document.getElementById('modal-balance').textContent   = '$' + availableBalance.toFixed(2);
+  document.getElementById('payout-amount-hint').textContent = `Max available: $${availableBalance.toFixed(2)} · Min: $20.00`;
+
+  // Enable payout button if balance >= 20
+  if (availableBalance >= 20) {
+    document.getElementById('payout-open-btn').disabled = false;
+    document.getElementById('payout-amount').max = availableBalance;
+  }
+
+  // Platform earnings breakdown (set by admin in artist doc)
+  const platformData = artist.platformEarnings || [];
+  const period       = artist.earningsPeriod    || null;
+  if (period) document.getElementById('earnings-period').textContent = period;
+
+  if (platformData.length > 0) {
+    const total = platformData.reduce((s,p) => s + (p.amount||0), 0);
+    document.getElementById('month-total').textContent = '$' + total.toFixed(2);
+    document.getElementById('platform-earnings').innerHTML = platformData.map(p => `
+      <div class="earning-row">
+        <div>
+          <div class="earning-platform">${p.platform}</div>
+          <div class="earning-streams">${p.streams ? p.streams.toLocaleString() + ' streams' : '—'}</div>
+        </div>
+        <div class="earning-amount">+$${(p.amount||0).toFixed(2)}</div>
+      </div>`).join('');
+  }
+
+  // Payout history
+  const pq = query(collection(db,'payouts'), where('artistUid','==',user.uid), orderBy('requestedAt','desc'));
+  const ps = await getDocs(pq);
+  const payouts = [];
+  ps.forEach(d => payouts.push({id:d.id,...d.data()}));
+
+  const doneCount = payouts.filter(p => p.status==='paid').length;
+  document.getElementById('stat-payout-count').textContent = `${doneCount} payout${doneCount!==1?'s':''} completed`;
+
+  if (payouts.length > 0) {
+    document.getElementById('payout-tbody').innerHTML = payouts.map(p => {
+      const date = p.requestedAt ? new Date(p.requestedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      const badgeClass = p.status==='paid' ? 'badge-live' : p.status==='processing' ? 'badge-review' : 'badge-pending';
+      const label = {paid:'Paid',processing:'Processing',pending:'Pending'}[p.status] || p.status;
+      return `<tr>
+        <td><span style="font-size:0.78rem;color:var(--muted);">${date}</span></td>
+        <td><span class="mono">$${(p.amount||0).toFixed(2)}</span></td>
+        <td><span style="font-size:0.78rem;color:var(--muted);">${p.method||'—'}</span></td>
+        <td><span class="badge ${badgeClass}">${label}</span></td>
+      </tr>`;
+    }).join('');
+  }
+});
+
+window.doSignOut = async function() { await signOut(auth); window.location.href = 'login.html'; };
+
+window.closePayout = function(e) {
+  if (e.target.id==='payout-modal') document.getElementById('payout-modal').classList.remove('open');
+};
+
+window.togglePayoutFields = function() {
+  const m = document.getElementById('payout-method').value;
+  ['mpesa','bank','wise','paypal'].forEach(k => {
+    document.getElementById(k+'-fields').style.display = m===k ? 'block' : 'none';
+  });
+};
+
+window.submitPayout = async function() {
+  const method = document.getElementById('payout-method').value;
+  const amount = parseFloat(document.getElementById('payout-amount').value);
+  const errEl  = document.getElementById('payout-modal-error');
+
+  if (!amount || amount < 20) {
+    errEl.style.display='flex'; errEl.innerHTML='<span>⚠</span><span>Minimum payout is $20.00.</span>'; return;
+  }
+  if (amount > availableBalance) {
+    errEl.style.display='flex'; errEl.innerHTML='<span>⚠</span><span>Amount exceeds available balance.</span>'; return;
+  }
+  errEl.style.display = 'none';
+
+  // Gather method details
+  let details = {};
+  if (method==='mpesa')  details = { phone: document.getElementById('mpesa-num').value, name: document.getElementById('mpesa-name').value };
+  if (method==='bank')   details = { bank: document.getElementById('bank-name').value, acc: document.getElementById('bank-acc').value, accName: document.getElementById('bank-accname').value };
+  if (method==='wise')   details = { acc: document.getElementById('wise-acc').value };
+  if (method==='paypal') details = { email: document.getElementById('paypal-email').value };
+
+  const btn = document.getElementById('payout-submit-btn');
+  btn.disabled=true; btn.textContent='Submitting…';
+
+  try {
+    await addDoc(collection(db,'payouts'), {
+      artistUid:   currentUser.uid,
+      artistEmail: currentUser.email,
+      amount, method, details,
+      status:      'pending',
+      requestedAt: new Date().toISOString(),
+    });
+
+    document.getElementById('payout-modal').classList.remove('open');
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success';
+    alert.innerHTML = '<span>✓</span><span>Payout request submitted. WWE Production will process your payment within 5–7 business days.</span>';
+    document.querySelector('.content').prepend(alert);
+    window.scrollTo({top:0,behavior:'smooth'});
+    btn.disabled=false; btn.textContent='Submit Request →';
+  } catch(e) {
+    errEl.style.display='flex'; errEl.innerHTML=`<span>⚠</span><span>Error: ${e.message}</span>`;
+    btn.disabled=false; btn.textContent='Submit Request →';
+  }
+};
+</script>
+</body>
+</html>

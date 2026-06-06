@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — WWE Production Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body>
+<div class="portal-wrap">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="label">WWE Production</div>
+      <div class="name">Artist Portal</div>
+      <div class="sub">Distribution Platform</div>
+    </div>
+    <div class="sidebar-section-label">Main</div>
+    <ul class="sidebar-nav">
+      <li><a href="dashboard.html" class="active"><span class="icon">⬛</span> Dashboard</a></li>
+      <li><a href="submit.html"><span class="icon">⬆</span> Submit Release <span class="badge">New</span></a></li>
+      <li><a href="earnings.html"><span class="icon">◈</span> Earnings</a></li>
+    </ul>
+    <div class="sidebar-section-label">Account</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="doSignOut()"><span class="icon">→</span> Sign Out</a></li>
+    </ul>
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="avatar" id="user-avatar">--</div>
+        <div>
+          <div class="user-name" id="user-name">Loading…</div>
+          <div class="user-role">Artist · Active</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Welcome back — here's your distribution overview</div>
+      </div>
+      <div class="topbar-actions">
+        <a href="submit.html" class="btn btn-primary">+ New Release</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="alert alert-info" id="welcome-alert">
+        <span>ℹ</span>
+        <span>Your account is active. Ready to submit your first release? <a href="submit.html" style="color:inherit;font-weight:700;border-bottom:1px solid currentColor;">Start here →</a></span>
+      </div>
+
+      <div class="grid-stats">
+        <div class="card">
+          <div class="card-title">Total Releases</div>
+          <div class="card-value" id="stat-releases">—</div>
+          <div class="card-sub" id="stat-releases-sub">Loading…</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Total Streams</div>
+          <div class="card-value mono" id="stat-streams">—</div>
+          <div class="card-sub">Across all platforms</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Earnings (USD)</div>
+          <div class="card-value mono" id="stat-earnings">—</div>
+          <div class="card-sub">Available to withdraw</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Platforms</div>
+          <div class="card-value" id="stat-platforms">—</div>
+          <div class="card-sub">DSPs distributing your music</div>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:32px;">
+        <div class="table-header">
+          <h3>Your Releases</h3>
+          <span style="font-size:0.72rem;color:var(--muted);" id="releases-updated"></span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Release title</th>
+              <th>Type</th>
+              <th>Submitted</th>
+              <th>Platforms</th>
+              <th>Status</th>
+              <th>Streams</th>
+            </tr>
+          </thead>
+          <tbody id="releases-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted-2);padding:32px;">Loading your releases…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="card">
+          <div style="margin-bottom:16px;">
+            <h2 style="font-size:0.9rem;font-family:var(--font-ui);font-weight:700;">Live on Platforms</h2>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;" id="platform-links">
+            <div style="font-size:0.82rem;color:var(--muted-2);">Go live to see platform links</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="margin-bottom:16px;">
+            <h2 style="font-size:0.9rem;font-family:var(--font-ui);font-weight:700;">Quick Actions</h2>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="submit.html" class="btn btn-primary" style="justify-content:center;">+ Submit New Release</a>
+            <a href="earnings.html" class="btn btn-ghost" style="justify-content:center;">View Earnings</a>
+            <a href="mailto:wwemediagroup21@gmail.com" class="btn btn-ghost" style="justify-content:center;">Contact WWE Team</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyD8wZX68esulLD9jVks8yXdFInwE0u9xbU",
+  authDomain:        "wwe-production-portal.firebaseapp.com",
+  projectId:         "wwe-production-portal",
+  storageBucket:     "wwe-production-portal.firebasestorage.app",
+  messagingSenderId: "528766558179",
+  appId:             "1:528766558179:web:3fd607894ad276bdb98ad6"
+};
+const ADMIN_EMAIL = "wwemediagroup21@gmail.com";
+// ─────────────────────────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const PLATFORMS = ['Spotify','Apple Music','Audiomack','Boomplay','YouTube Music','Tidal','Amazon Music','Deezer'];
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (user.email === ADMIN_EMAIL) { window.location.href = 'admin.html'; return; }
+
+  // Load artist profile
+  const artistSnap = await getDoc(doc(db, 'artists', user.uid));
+  const artist = artistSnap.exists() ? artistSnap.data() : { name: user.email, earnings: { available: 0 } };
+
+  const initials = (artist.name || 'AR').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name').textContent   = artist.name || user.email;
+
+  const earnings = artist.earnings || { available: 0 };
+
+  // Load releases
+  const q = query(collection(db, 'releases'), where('artistUid', '==', user.uid), orderBy('submittedAt', 'desc'));
+  const snap = await getDocs(q);
+  const releases = [];
+  snap.forEach(d => releases.push({ id: d.id, ...d.data() }));
+
+  // Stats
+  const live    = releases.filter(r => r.status === 'live').length;
+  const pending = releases.filter(r => r.status === 'pending' || r.status === 'review').length;
+  const streams = releases.reduce((s, r) => s + (r.streams || 0), 0);
+
+  document.getElementById('stat-releases').textContent     = releases.length || '0';
+  document.getElementById('stat-releases-sub').textContent = `${live} live · ${pending} pending`;
+  document.getElementById('stat-streams').textContent      = streams ? streams.toLocaleString() : '0';
+  document.getElementById('stat-earnings').textContent     = '$' + (earnings.available || 0).toFixed(2);
+  document.getElementById('stat-platforms').textContent    = live > 0 ? PLATFORMS.length : '0';
+
+  if (releases.length > 0) document.getElementById('welcome-alert').style.display = 'none';
+
+  // Releases table
+  const tbody = document.getElementById('releases-tbody');
+  if (releases.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted-2);padding:32px;">No releases yet. <a href="submit.html" style="color:var(--gold);">Submit your first →</a></td></tr>`;
+  } else {
+    tbody.innerHTML = releases.map(r => {
+      const date = r.submittedAt ? new Date(r.submittedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      const badgeClass = { live:'badge-live', pending:'badge-pending', review:'badge-review', rejected:'badge-rejected' }[r.status] || 'badge-draft';
+      const statusLabel = { live:'Live', pending:'Pending', review:'In Review', rejected:'Rejected' }[r.status] || r.status;
+      const platforms = r.platforms ? r.platforms.length + ' platforms' : (r.status==='live' ? PLATFORMS.length+' platforms' : '—');
+      return `<tr>
+        <td><strong>${r.title || '—'}</strong></td>
+        <td><span style="color:var(--muted);font-size:0.78rem;">${r.type||'—'}</span></td>
+        <td><span style="color:var(--muted);font-size:0.78rem;">${date}</span></td>
+        <td><span style="color:var(--muted);font-size:0.78rem;">${platforms}</span></td>
+        <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
+        <td><span class="mono" style="font-size:0.82rem;">${r.streams ? r.streams.toLocaleString() : (r.status==='live'?'0':'—')}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Platform links (only if has live releases)
+  if (live > 0) {
+    document.getElementById('platform-links').innerHTML = PLATFORMS.slice(0,4).map(p => `
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;">
+        <span>${p}</span>
+        <span class="badge badge-live" style="font-size:0.6rem;">Live</span>
+      </div>`).join('');
+  }
+});
+
+window.doSignOut = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+};
+</script>
+</body>
+</html>

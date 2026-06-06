@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barz Daily — Kenyan Music. In Writing.</title>
+    <meta name="description" content="The pulse of Nairobi's urban music scene — editorial, analytical, unfiltered. By Worldwide Entertainment Group.">
+    <meta property="og:title" content="Barz Daily — Kenyan Music. In Writing.">
+    <meta property="og:description" content="The pulse of Nairobi's urban music scene — editorial, analytical, unfiltered.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --black: #09090b;
+            --surface: #111114;
+            --surface2: #18181c;
+            --border: #2a2a30;
+            --text: #e8e8ea;
+            --muted: #72727a;
+            --faint: #3a3a42;
+            --gold: #c9a84c;
+            --gold-dim: #a07830;
+            --gold-glow: rgba(201,168,76,0.12);
+            --red: #c0392b;
+            --red-dim: rgba(192,57,43,0.1);
+        }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 24px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(9,9,11,0.94); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand { display: flex; flex-direction: column; gap: 1px; text-decoration: none; }
+        .nav-brand-main { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; letter-spacing: 0.05em; color: var(--red); text-transform: uppercase; }
+        .nav-brand-sub { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+        .nav-back { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-decoration: none; text-transform: uppercase; transition: color 0.2s; display: flex; align-items: center; gap: 6px; }
+        .nav-back:hover { color: var(--text); }
+
+        /* ── HERO ── */
+        .bd-hero {
+            padding: 120px 24px 80px; max-width: 1100px; margin: 0 auto;
+            border-bottom: 1px solid var(--border);
+        }
+        .bd-hero-eyebrow {
+            font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+            color: var(--red); text-transform: uppercase; margin-bottom: 24px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .bd-hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--red); }
+        .bd-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(42px, 7vw, 80px); font-weight: 900; line-height: 1; letter-spacing: -0.02em; margin-bottom: 20px; }
+        .bd-hero h1 em { font-style: italic; color: var(--gold); }
+        .bd-hero-sub { font-size: 16px; color: var(--muted); max-width: 560px; line-height: 1.8; }
+
+        /* ── LAYOUT ── */
+        .bd-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* ── FEATURED STRIP ── */
+        .featured-strip { padding: 60px 0; border-bottom: 1px solid var(--border); }
+        .strip-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--red); display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+        .strip-label::before { content: ''; display: block; width: 32px; height: 1px; background: var(--red); }
+
+        .featured-card {
+            display: grid; grid-template-columns: 1.4fr 1fr; gap: 0;
+            border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+            cursor: pointer; transition: border-color 0.2s; background: var(--surface);
+        }
+        .featured-card:hover { border-color: var(--red); }
+        @media (max-width: 700px) { .featured-card { grid-template-columns: 1fr; } }
+
+        .featured-card-img {
+            min-height: 280px; background: var(--surface2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 72px; position: relative; overflow: hidden;
+            border-right: 1px solid var(--border);
+        }
+        @media (max-width: 700px) { .featured-card-img { min-height: 180px; border-right: none; border-bottom: 1px solid var(--border); } }
+        .featured-card-img-bg { position: absolute; inset: 0; }
+        .featured-card-label { position: absolute; bottom: 16px; left: 16px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); background: rgba(9,9,11,0.85); padding: 4px 10px; border-radius: 2px; }
+
+        .featured-card-body { padding: 36px 32px; display: flex; flex-direction: column; gap: 12px; }
+        .bd-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
+        .bd-tag--red { color: var(--red); background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.2); }
+        .bd-tag--gold { color: var(--gold); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); }
+
+        .featured-card-title { font-family: 'Playfair Display', serif; font-size: clamp(18px, 2.5vw, 26px); font-weight: 700; color: var(--text); line-height: 1.3; }
+        .featured-card-excerpt { font-size: 13px; color: var(--muted); line-height: 1.8; flex: 1; }
+        .featured-card-meta { font-size: 11px; color: var(--faint); display: flex; gap: 16px; flex-wrap: wrap; }
+        .read-link { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; }
+        .read-link:hover { color: #e05a52; }
+
+        /* ── GRID SECTION ── */
+        .bd-section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+        .bd-section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 32px; gap: 16px; flex-wrap: wrap; }
+        .bd-section-title { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 30px); font-weight: 700; color: var(--text); }
+
+        .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+        .post-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+            overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s;
+        }
+        .post-card:hover { border-color: var(--red); transform: translateY(-3px); }
+        .post-card-img { height: 160px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+        .post-card-img-bg { position: absolute; inset: 0; }
+        .post-card-body { padding: 20px; }
+        .post-card-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.35; margin-bottom: 8px; }
+        .post-card-excerpt { font-size: 12px; color: var(--muted); line-height: 1.75; margin-bottom: 14px; }
+        .post-card-meta { font-size: 11px; color: var(--faint); display: flex; gap: 12px; flex-wrap: wrap; }
+
+        /* ── LIST SECTION ── */
+        .post-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .post-list-item { background: var(--surface); padding: 20px 24px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .post-list-item:hover { background: var(--surface2); }
+        .post-list-item-left { flex: 1; }
+        .post-list-item-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 6px; }
+        .post-list-item-meta { font-size: 11px; color: var(--faint); display: flex; gap: 12px; }
+        .post-list-item-arrow { color: var(--faint); font-size: 14px; flex-shrink: 0; transition: color 0.2s, transform 0.2s; }
+        .post-list-item:hover .post-list-item-arrow { color: var(--red); transform: translateX(3px); }
+
+        /* ── ABOUT BAND ── */
+        .about-band { padding: 48px 24px; background: var(--surface); border-top: 1px solid var(--border); }
+        .about-band-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+        .about-band-text { flex: 1; min-width: 260px; }
+        .about-band-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+        .about-band-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+        .about-band-desc { font-size: 13px; color: var(--muted); line-height: 1.8; max-width: 500px; }
+        .about-band-links { display: flex; gap: 12px; flex-wrap: wrap; }
+        .about-band-link { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--muted); border: 1px solid var(--border); padding: 8px 16px; border-radius: 3px; transition: all 0.2s; }
+        .about-band-link:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+        /* ── FOOTER ── */
+        .bd-footer { padding: 40px 24px; border-top: 1px solid var(--border); }
+        .bd-footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .bd-footer-brand { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--faint); text-transform: uppercase; }
+        .bd-footer-brand span { color: var(--red); }
+        .bd-footer-copy { font-size: 11px; color: var(--faint); }
+
+        /* ── ARTICLE OVERLAY ── */
+        #article-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: var(--black); overflow: hidden; flex-direction: column;
+        }
+        .overlay-topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; height: 56px; border-bottom: 1px solid var(--border);
+            flex-shrink: 0; background: var(--black);
+        }
+        .overlay-topbar-brand { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--red); text-transform: uppercase; }
+        .overlay-close-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 8px 16px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+        .overlay-close-btn:hover { border-color: var(--red); color: var(--text); }
+        .overlay-body { flex: 1; overflow-y: auto; padding: 0 0 80px; }
+        .overlay-progress { position: fixed; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 201; }
+        .overlay-progress-bar { height: 100%; background: var(--red); transition: width 0.1s; }
+
+        /* article typography */
+        .article-inner { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+        .article-header { padding: 72px 0 56px; border-bottom: 1px solid var(--border); }
+        .article-tags { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+        .article-h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 20px; }
+        .article-h1 em { color: var(--red); }
+        .article-lead { font-size: 1.1rem; font-weight: 300; color: var(--muted); max-width: 600px; line-height: 1.7; margin-bottom: 32px; }
+        .article-byline { display: flex; align-items: center; gap: 10px; }
+        .article-byline-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+        .article-byline-text { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
+
+        .article-body { padding: 56px 0; font-size: 1.05rem; color: #ccccd0; line-height: 1.85; }
+        .article-body p { margin-bottom: 24px; }
+        .article-body p:last-child { margin-bottom: 0; }
+        .article-body h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 700; color: var(--text); line-height: 1.2; margin: 48px 0 20px; }
+        .article-body .section-kicker { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 4px; color: var(--red); text-transform: uppercase; display: block; margin-bottom: 10px; margin-top: 48px; }
+        .article-body .section-kicker--gold { color: var(--gold); }
+        .article-pullquote { border-left: 3px solid var(--red); padding: 20px 28px; margin: 40px 0; background: var(--surface); }
+        .article-pullquote--gold { border-left-color: var(--gold); }
+        .article-pullquote p { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-style: italic; color: var(--text); line-height: 1.6; margin: 0; }
+        .article-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin: 40px 0; }
+        .article-grid-2-cell { background: var(--surface); padding: 28px 24px; }
+        .article-cell-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .article-cell-sub { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
+        .article-cell-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin: 0; }
+        .article-track-list { list-style: none; margin: 16px 0 40px; }
+        .article-track-list li { display: flex; align-items: baseline; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .article-track-list li:last-child { border-bottom: none; }
+        .article-track-year { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); min-width: 36px; }
+        .article-track-title { font-size: 0.95rem; color: var(--text); }
+        .article-track-note { font-size: 0.85rem; color: var(--muted); margin-left: auto; }
+        .article-footer { padding: 32px 0 60px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .article-footer-left { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--faint); letter-spacing: 2px; text-transform: uppercase; }
+        .article-footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 2px; text-transform: uppercase; }
+
+        @media (max-width: 600px) {
+            .article-grid-2 { grid-template-columns: 1fr; }
+            .article-track-note { display: none; }
+        }
+
+        /* ── SHARE BANNER ── */
+        .share-banner { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px 24px; margin: 0 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .share-banner-text { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+        .share-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 16px; border: 1px solid var(--border); border-radius: 3px; background: none; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+        .share-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+        .share-btn.copied { border-color: #5ec9c4; color: #5ec9c4; }
+    </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+    <a href="#" class="nav-brand">
+        <div class="nav-brand-main">Barz Daily</div>
+        <div class="nav-brand-sub">by Worldwide Entertainment Group</div>
+    </a>
+    <a href="index.html" class="nav-back">← Back to WWE Group</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="bd-hero">
+    <div class="bd-hero-eyebrow">Editorial · Nairobi · Est. 2021</div>
+    <h1>Kenyan Music.<br><em>In Writing.</em></h1>
+    <p class="bd-hero-sub">The pulse of Nairobi's urban music scene — editorial, analytical, unfiltered. From the ThirtyFour Brick collective to the producers shaping the sound.</p>
+</div>
+
+<!-- ── FEATURED: ON THE RADAR ── -->
+<section class="featured-strip">
+    <div class="bd-container">
+        <div class="strip-label">On The Radar — Weekly Feature</div>
+        <div class="featured-card" onclick="openArticle('gtb')">
+            <div class="featured-card-img">
+                <div class="featured-card-img-bg" style="background: linear-gradient(135deg, rgba(192,57,43,0.5), rgba(201,168,76,0.25));"></div>
+                🎤
+                <span class="featured-card-label">On The Radar — Weekly Feature</span>
+            </div>
+            <div class="featured-card-body">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <span class="bd-tag bd-tag--red">On The Radar</span>
+                    <span class="bd-tag bd-tag--gold">Artist Feature</span>
+                </div>
+                <div class="featured-card-title">GTB Emzee &amp; Lecco Man: The Rising Stars Shaping Nairobi's Music Scene</div>
+                <div class="featured-card-excerpt">Two rappers. One city. A sound that can't be faked. GTB Emzee and Lecco Man aren't waiting for the industry to let them in — they're building the door themselves. From the Kigali EP to the Nai York collab, the ThirtyFour Brick collective is moving.</div>
+                <div class="featured-card-meta">
+                    <span>Worldwide Entertainment Group · Barz Daily</span>
+                    <span>Jan 2025</span>
+                    <span>6 min read</span>
+                </div>
+                <span class="read-link">Read Feature →</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── EDITOR'S PICKS GRID ── -->
+<section class="bd-section">
+    <div class="bd-container">
+        <div class="bd-section-header">
+            <div>
+                <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">Editor's Picks</div>
+                <div class="bd-section-title">Recent <em style="font-family:'Playfair Display',serif; font-style:italic; color:var(--gold);">Features</em></div>
+            </div>
+        </div>
+        <div class="post-grid">
+            <div class="post-card" onclick="openArticle('underground')">
+                <div class="post-card-img">
+                    <div class="post-card-img-bg" style="background:linear-gradient(135deg,rgba(201,168,76,0.4),rgba(94,201,196,0.2));"></div>
+                    🔥
+                </div>
+                <div class="post-card-body">
+                    <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                        <span class="bd-tag bd-tag--red" style="font-size:8px; padding:3px 8px;">Editor's Pick</span>
+                    </div>
+                    <div class="post-card-title">The Underground Takeover: How Kenya's Independent Scene Is Overthrowing the Mainstream</div>
+                    <div class="post-card-excerpt">They don't need the radio. They don't need the labels. Kenya's underground artists are building streaming audiences, selling out intimate venues, and changing what Kenyan music sounds like.</div>
+                    <div class="post-card-meta"><span style="color:var(--gold);">Editor's Pick</span><span>May 2026</span><span>9 min read</span></div>
+                </div>
+            </div>
+
+            <!-- Coming Soon Cards -->
+            <div class="post-card" style="cursor:default; opacity:0.6;">
+                <div class="post-card-img">
+                    <div class="post-card-img-bg" style="background:linear-gradient(135deg,rgba(94,201,196,0.3),rgba(192,57,43,0.2));"></div>
+                    📻
+                </div>
+                <div class="post-card-body">
+                    <div style="display:flex; gap:6px; margin-bottom:10px;"><span class="bd-tag bd-tag--gold" style="font-size:8px; padding:3px 8px;">Industry</span></div>
+                    <div class="post-card-title">Streaming Numbers vs. Stage Presence: The Split Reality of Kenya's New Artists</div>
+                    <div class="post-card-excerpt">The numbers say one thing. The room says another. How Nairobi's new artists are navigating the gap between digital reach and live credibility.</div>
+                    <div class="post-card-meta"><span>Industry</span><span>May 2026</span><span>Coming Soon</span></div>
+                </div>
+            </div>
+
+            <div class="post-card" style="cursor:default; opacity:0.6;">
+                <div class="post-card-img">
+                    <div class="post-card-img-bg" style="background:linear-gradient(135deg,rgba(155,126,212,0.35),rgba(201,168,76,0.2));"></div>
+                    🏗️
+                </div>
+                <div class="post-card-body">
+                    <div style="display:flex; gap:6px; margin-bottom:10px;"><span class="bd-tag bd-tag--red" style="font-size:8px; padding:3px 8px;">Analysis</span></div>
+                    <div class="post-card-title">Why Gengetone Wasn't a Trend — It Was Infrastructure</div>
+                    <div class="post-card-excerpt">Three years since its peak, the case for Gengetone as the most important structural shift in Kenyan music history — not despite the backlash, but because of it.</div>
+                    <div class="post-card-meta"><span>Analysis</span><span>May 2026</span><span>Coming Soon</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── ALL ARTICLES LIST ── -->
+<section class="bd-section">
+    <div class="bd-container">
+        <div class="bd-section-header">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--red);">All Articles</div>
+        </div>
+        <div class="post-list">
+            <div class="post-list-item" onclick="openArticle('gtb')">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">GTB Emzee &amp; Lecco Man — The Rising Stars Shaping Nairobi's Scene</div>
+                    <div class="post-list-item-meta"><span style="color:var(--red);">On The Radar</span><span>Jan 2025</span><span>6 min</span></div>
+                </div>
+                <div class="post-list-item-arrow">→</div>
+            </div>
+            <div class="post-list-item" onclick="openArticle('underground')">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">The Underground Takeover: How Kenya's Independent Scene Is Overthrowing the Mainstream</div>
+                    <div class="post-list-item-meta"><span style="color:var(--gold);">Editor's Pick</span><span>May 2026</span><span>9 min</span></div>
+                </div>
+                <div class="post-list-item-arrow">→</div>
+            </div>
+            <div class="post-list-item" style="opacity:0.5; cursor:default;">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">The Producer Problem: Nairobi's Beatmakers Deserve More Credit</div>
+                    <div class="post-list-item-meta"><span>Opinion</span><span>Apr 2026</span><span>Coming Soon</span></div>
+                </div>
+                <div class="post-list-item-arrow" style="color:var(--faint);">—</div>
+            </div>
+            <div class="post-list-item" style="opacity:0.5; cursor:default;">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">Five Kenyan Albums That Changed the Conversation</div>
+                    <div class="post-list-item-meta"><span>Lists</span><span>Apr 2026</span><span>Coming Soon</span></div>
+                </div>
+                <div class="post-list-item-arrow" style="color:var(--faint);">—</div>
+            </div>
+            <div class="post-list-item" style="opacity:0.5; cursor:default;">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">Interview: Building a Label in Nairobi Without Industry Infrastructure</div>
+                    <div class="post-list-item-meta"><span>Interview</span><span>Apr 2026</span><span>Coming Soon</span></div>
+                </div>
+                <div class="post-list-item-arrow" style="color:var(--faint);">—</div>
+            </div>
+            <div class="post-list-item" style="opacity:0.5; cursor:default;">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">The TikTok-to-Radio Pipeline and What It Means for Kenyan Music</div>
+                    <div class="post-list-item-meta"><span>Industry</span><span>Mar 2026</span><span>Coming Soon</span></div>
+                </div>
+                <div class="post-list-item-arrow" style="color:var(--faint);">—</div>
+            </div>
+            <div class="post-list-item" style="opacity:0.5; cursor:default;">
+                <div class="post-list-item-left">
+                    <div class="post-list-item-title">Barz Daily Artist Spotlight: The Next Wave from Eastlands</div>
+                    <div class="post-list-item-meta"><span>Spotlight</span><span>Mar 2026</span><span>Coming Soon</span></div>
+                </div>
+                <div class="post-list-item-arrow" style="color:var(--faint);">—</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── ABOUT BARZ DAILY ── -->
+<div class="about-band">
+    <div class="about-band-inner">
+        <div class="about-band-text">
+            <div class="about-band-label">About</div>
+            <div class="about-band-title">Barz Daily — A Division of WWE Group</div>
+            <div class="about-band-desc">Editorial coverage of Kenya's urban music scene — artist features, industry analysis, album reviews, and cultural commentary. Founded by Nimrod Jabali Rono (Yvng Wave), part of Worldwide Entertainment Group, Nairobi.</div>
+        </div>
+        <div class="about-band-links">
+            <a href="https://www.instagram.com/barz.daily?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="about-band-link">Instagram @barz.daily</a>
+            <a href="index.html" class="about-band-link">WWE Group ↗</a>
+            <a href="mailto:wwemediagroup21@gmail.com" class="about-band-link">Pitch a Story</a>
+        </div>
+    </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="bd-footer">
+    <div class="bd-footer-inner">
+        <div class="bd-footer-brand"><span>Barz Daily</span> · Worldwide Entertainment Group</div>
+        <div class="bd-footer-copy">© 2026 WWE Group · Nairobi, Kenya</div>
+    </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     ARTICLE OVERLAY
+════════════════════════════════════════ -->
+<div id="article-overlay">
+    <div class="overlay-topbar">
+        <div class="overlay-topbar-brand">Barz Daily</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button class="share-btn" id="share-btn-top" onclick="shareArticle()">Share ↗</button>
+            <button class="overlay-close-btn" onclick="closeArticle()">✕ Close</button>
+        </div>
+    </div>
+    <div class="overlay-body" id="overlay-body" onscroll="updateReadProgress()">
+
+        <!-- ── GTB POST ── -->
+        <article id="article-gtb" style="display:none;">
+            <div class="article-inner">
+                <header class="article-header">
+                    <div class="article-tags">
+                        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;background:var(--red);color:#fff;padding:4px 10px;text-transform:uppercase;">Barz Daily</span>
+                        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;border:1px solid var(--gold);color:var(--gold);padding:4px 10px;text-transform:uppercase;">On The Radar</span>
+                        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;">January 12, 2025</span>
+                    </div>
+                    <h1 class="article-h1">GTB Emzee &amp; Lecco Man:<br>The Rising Stars <em>Shaping</em><br>Nairobi's Music Scene</h1>
+                    <p class="article-lead">Two rappers. One city. A sound that can't be faked. GTB Emzee and Lecco Man aren't waiting for the industry to let them in — they're building the door themselves.</p>
+                    <div class="article-byline">
+                        <div class="article-byline-dot"></div>
+                        <span class="article-byline-text">Worldwide Entertainment Group · Barz Daily</span>
+                    </div>
+                </header>
+
+                <div class="article-body">
+                    <p>Nairobi's rap scene has never been short of talent. But every so often, two names start showing up everywhere at once — in the cyphers, in the DMs, in the conversations between people who actually follow the culture. Right now, those names are <strong style="color:var(--text);">GTB Emzee</strong> and <strong style="color:var(--text);">Lecco Man</strong>. And if you're sleeping on them, you're already behind.</p>
+                    <p>These aren't overnight stories. Both artists have put in years of work, built real fanbases, and earned their reputations bar by bar. What makes 2024 different is that the work finally has the audience it deserves. Nairobi is paying attention. So is everyone watching Nairobi.</p>
+
+                    <div class="article-grid-2">
+                        <div class="article-grid-2-cell">
+                            <div class="article-cell-name">GTB Emzee</div>
+                            <div class="article-cell-sub">Glad To Be · Since 2022</div>
+                            <p class="article-cell-desc">Raw lyricism. Street pride. Storytelling that hits different because it comes from somewhere real. The man behind the GTB Movement.</p>
+                        </div>
+                        <div class="article-grid-2-cell">
+                            <div class="article-cell-name">Lecco Man</div>
+                            <div class="article-cell-sub">On The Radar · Sharp Delivery</div>
+                            <p class="article-cell-desc">Broke through with "Iko Jikoni" at Reaction Time Africa Studios. Sharp bars, dynamic flow, and a work ethic that doesn't stop.</p>
+                        </div>
+                    </div>
+
+                    <span class="section-kicker">The GTB Movement</span>
+                    <h2>GTB Emzee: Built Different From Day One</h2>
+                    <p>GTB Emzee's name carries weight because he put that weight there himself. <strong style="color:var(--text);">GTB — Glad To Be</strong> — isn't just a rap name, it's a philosophy. Pride in where you come from. No apologies for who you are. That energy runs through everything he makes, from the way he delivers a bar to the merch brand he built to represent the movement.</p>
+                    <p>He came out swinging in December 2022 with the <strong style="color:var(--text);">Kigali EP</strong> — a project that announced his range early. Versatile. Storytelling. Not one-dimensional. In 2023, he followed up with <strong style="color:var(--text);">6Figure Discussion</strong>, cementing himself as a serious contender when a lot of artists would have slowed down after a debut.</p>
+                    <p>Then March 2024 happened. <strong style="color:var(--text);">Bark N Bite</strong> landed and it wasn't a project you could ignore. The visuals were gritty and intentional. The track <strong style="color:var(--text);">"Click Bang"</strong> featuring Buruklyn's own Young Louie made it clear — this man is not here to play a supporting role. He came to dominate.</p>
+
+                    <div class="article-pullquote">
+                        <p>"His music combines raw lyricism with a sense of pride in his origins — a sound that is both fresh and distinctly African."</p>
+                    </div>
+
+                    <p>As the year closed, GTB Emzee kept delivering. <strong style="color:var(--text);">"Katika"</strong> featuring vocalist Natalieqay and acclaimed producer Soundkraft proved his range extends beyond hard rap. He can hold space across genres without losing his identity. That's a rare thing.</p>
+
+                    <span class="section-kicker">On The Radar</span>
+                    <h2>Lecco Man: From the Kitchen to the Spotlight</h2>
+                    <p>If you know, you know — and Lecco Man made sure you'd know from the moment <strong style="color:var(--text);">"Iko Jikoni"</strong> dropped at Reaction Time Africa Studios with Dice King. That freestyle didn't just introduce him. It announced him. Sharp lyricism. Dynamic delivery. The kind of verse that makes people rewind and listen again because they want to catch everything.</p>
+                    <p>What followed wasn't a one-hit-freestyle act. Lecco Man built on that momentum with a steady stream of music that proved he belongs in any conversation about the next wave of Kenyan rap. His collaborative spirit — working with GTB Emzee, Dice King, and others deep in the Nairobi scene — shows an artist who understands that unity in the culture is not weakness. It's strategy.</p>
+                    <p>His rise is a story about authentic storytelling connecting with audiences who are tired of manufactured energy. Lecco Man sounds like someone who has actually lived what he's rapping about. In a game full of performance, that realness cuts through.</p>
+
+                    <span class="section-kicker">Together</span>
+                    <h2>The Nai York EP &amp; The ThirtyFour Brick Alliance</h2>
+                    <p>Individually, both artists are forces. Together, they're something else entirely. In 2024, GTB Emzee and Lecco Man joined forces on the <strong style="color:var(--text);">Nai York EP</strong> — a project built on a shared vision of what Nairobi's music can be when it's both grounded in the streets and reaching for something bigger.</p>
+                    <p>The partnership between GTB Emzee, Lecco Man, and <strong style="color:var(--text);">ThirtyFour Brick</strong> has been the real engine driving Nairobi hip-hop forward. That collective — which includes <strong style="color:var(--text);">Mauru Gwash</strong> with his deep crack voice and mad hooks, <strong style="color:var(--text);">Mad Rapper JayIo</strong> who is a lyrical mastermind, and the rising <strong style="color:var(--text);">OnlyMoh</strong> bringing a fresh yet gritty edge — represents a new face for Nairobi's scene. Not a single wave. A movement.</p>
+
+                    <ul class="article-track-list">
+                        <li><span class="article-track-year">2022</span><span class="article-track-title">GTB Emzee — Kigali EP</span><span class="article-track-note">Debut</span></li>
+                        <li><span class="article-track-year">2023</span><span class="article-track-title">GTB Emzee — 6Figure Discussion</span><span class="article-track-note">Cementing His Position</span></li>
+                        <li><span class="article-track-year">2024</span><span class="article-track-title">GTB Emzee — Bark N Bite ft. Young Louie</span><span class="article-track-note">Breakthrough</span></li>
+                        <li><span class="article-track-year">2024</span><span class="article-track-title">GTB Emzee — Katika ft. Natalieqay &amp; Soundkraft</span><span class="article-track-note">Cross-Genre</span></li>
+                        <li><span class="article-track-year">2024</span><span class="article-track-title">GTB Emzee &amp; Lecco Man — Nai York EP</span><span class="article-track-note">Joint Project</span></li>
+                    </ul>
+
+                    <span class="section-kicker">The Bigger Picture</span>
+                    <h2>What Nairobi Hip-Hop Looks Like Now</h2>
+                    <p>GTB Emzee and Lecco Man are not rising stars waiting for their moment. The moment is already happening. What they represent — along with the ThirtyFour Brick collective and producers like Dice King keeping the sound tight — is a Nairobi rap scene that is no longer asking for validation from outside. It's setting its own terms.</p>
+                    <p>Raw bars. Real stories. A lifestyle brand in the GTB merch label that turns the music into a way of life. The motto says it all: <strong style="color:var(--text);">Glad To Be</strong>. Glad to be here. Glad to be from Nairobi. Glad to be doing it on their own terms.</p>
+                    <p>Watch closely. The future of Kenyan hip-hop doesn't live somewhere else. It's already built. It sounds like this.</p>
+
+                    <div class="article-pullquote">
+                        <p>"They are redefining what it means to be a Kenyan rapper in the modern era — unapologetically raw, refreshingly original."</p>
+                    </div>
+                </div>
+
+                <footer class="article-footer">
+                    <span class="article-footer-left">Worldwide Entertainment Group · Worldwide Press Publishing</span>
+                    <span class="article-footer-right">Barz Daily · On The Radar</span>
+                </footer>
+            </div>
+        </article>
+
+        <!-- ── UNDERGROUND POST ── -->
+        <article id="article-underground" style="display:none;">
+            <div class="article-inner">
+                <header class="article-header">
+                    <div class="article-tags">
+                        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;background:var(--red);color:#fff;padding:4px 10px;text-transform:uppercase;">Barz Daily</span>
+                        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;border:1px solid var(--gold);color:var(--gold);padding:4px 10px;text-transform:uppercase;">Editor's Pick</span>
+                        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;">May 2026</span>
+                    </div>
+                    <h1 class="article-h1" style="--em-color:var(--gold);">The Underground <em style="color:var(--gold);">Takeover</em>:<br>How Kenya's Independent Scene<br>Is Overthrowing the Mainstream</h1>
+                    <p class="article-lead">They don't need the radio. They don't need the labels. Kenya's underground artists are rewriting the game — streaming, touring, and building movements without asking permission from an industry that was never built for them.</p>
+                    <div class="article-byline">
+                        <div class="article-byline-dot"></div>
+                        <span class="article-byline-text">Barz Daily Editorial · Worldwide Press</span>
+                    </div>
+                </header>
+
+                <div class="article-body">
+                    <p>The Kenyan music industry has a gatekeeping problem. Or rather — it <em>had</em> one. Because what's been happening over the last three years, in studios off Mombasa Road and home setups in Eastlands and cypher sessions in Westlands parking lots, is something the industry didn't see coming: the underground isn't asking to be let in anymore. It's already inside. And it's rearranging the furniture.</p>
+                    <p>This isn't a new story globally. Independent scenes have been disrupting mainstream industries since punk overthrew arena rock and hip-hop rewrote pop. But Kenya's version has its own specific texture — rooted in the collision of Sheng lyricism, trap production aesthetics, Afro-fusion melody, and a generation of artists who grew up on both Nairobi street culture and global streaming platforms simultaneously. They know what the world sounds like. They're not intimidated by it. They're competing with it on their own terms.</p>
+
+                    <div class="article-pullquote article-pullquote--gold">
+                        <p>"The underground isn't a stepping stone anymore. It's the destination. The artists who understand that are the ones building careers that last."</p>
+                    </div>
+
+                    <span class="section-kicker section-kicker--gold">The Infrastructure Shift</span>
+                    <h2>How They Built a Scene Without the Industry's Permission</h2>
+                    <p>For most of Kenyan music's commercial history, the path was fixed: record something, get it to a radio plugger, get on NRG or Capital FM, get booked for corporate events, repeat. The labels and radio stations held the keys. If they didn't like you — your sound, your look, your willingness to play the game — you didn't eat. The system selected for compliance over creativity, and the music reflected it.</p>
+                    <p>What changed everything was a combination of affordable recording technology, Spotify finally landing properly in the Kenyan market, and the rise of Instagram and TikTok as genuine discovery platforms. Suddenly an artist in Eastlands with a decent audio interface and a bedroom could record, mix, master, distribute, and promote their music to a global audience without spending a single shilling on radio. The gatekeepers still existed. They just became irrelevant.</p>
+                    <p>The numbers tell the story. Kenya's independent streaming figures have grown dramatically. More importantly, the quality of independent releases has reached a level where the distinction between "independent" and "signed" no longer maps onto a distinction between "amateur" and "professional." The underground produces world-class records. It has for years. The mainstream is finally being forced to admit it.</p>
+
+                    <span class="section-kicker section-kicker--gold">The Sound</span>
+                    <h2>What the Underground Actually Sounds Like</h2>
+                    <p>If you're expecting a monolith, you haven't been paying attention. The sound of Kenya's underground in 2026 is plural, layered, and in constant conversation with itself. On one end you have the hard rap tradition — Sheng lyricism over trap production, sharp bars about life in Nairobi's informal settlements, delivered with the kind of specificity that only comes from having actually lived it. GTB Emzee. Lecco Man. The ThirtyFour Brick collective. Artists who made the conscious decision to represent where they come from rather than perform a generic version of American rap.</p>
+                    <p>On the other end — and often in the same room — you have the melodic experimentalists: producers layering Afrobeats rhythms under 808s, vocalists blending Kiswahili and Sheng with pop hooks, artists who refuse to let genre be a ceiling. The underground is where those two poles meet and argue and produce something new. That collision is where the energy lives.</p>
+
+                    <div class="article-pullquote article-pullquote--gold">
+                        <p>"Nairobi is not waiting for an international co-sign to validate its music. It stopped waiting. The records exist. The audiences exist. The scene is real."</p>
+                    </div>
+
+                    <span class="section-kicker section-kicker--gold">What Comes Next</span>
+                    <h2>The Scene is Real. Now What?</h2>
+                    <p>The question for Kenya's underground in 2026 isn't whether it's legitimate. That debate is over. The question is infrastructure — the same question that faces every creative economy at the point where the art outpaces the systems built to support it. Booking agencies. Publishing administration. Sync licensing. Tour infrastructure. Legal representation for artists who've never had it. These are the gaps that matter now.</p>
+                    <p>Worldwide Entertainment Group was built around that exact problem. The creative output is there. The infrastructure needs to catch up. And it will — because the artists generating that output won't accept the old excuse that Kenya's market is too small, too unsophisticated, too anything. They've already proven the opposite. They're not waiting for permission to do it again.</p>
+                </div>
+
+                <footer class="article-footer">
+                    <span class="article-footer-left">Worldwide Entertainment Group · Worldwide Press Publishing</span>
+                    <span class="article-footer-right" style="color:var(--gold);">Barz Daily · Editorial</span>
+                </footer>
+            </div>
+        </article>
+
+    </div>
+    <div class="overlay-progress"><div class="overlay-progress-bar" id="read-progress-bar"></div></div>
+</div>
+
+<script>
+let currentArticle = null;
+
+function openArticle(id) {
+    // Hide all articles
+    document.querySelectorAll('#article-overlay article').forEach(a => a.style.display = 'none');
+    // Show selected
+    const art = document.getElementById('article-' + id);
+    if (!art) return;
+    art.style.display = 'block';
+    currentArticle = id;
+
+    const overlay = document.getElementById('article-overlay');
+    overlay.style.display = 'flex';
+    document.getElementById('overlay-body').scrollTop = 0;
+    document.getElementById('read-progress-bar').style.width = '0%';
+    document.body.style.overflow = 'hidden';
+
+    // Update URL hash for shareability
+    history.pushState({ article: id }, '', '#' + id);
+}
+
+function closeArticle() {
+    const overlay = document.getElementById('article-overlay');
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    currentArticle = null;
+    history.pushState({}, '', window.location.pathname);
+}
+
+function updateReadProgress() {
+    const body = document.getElementById('overlay-body');
+    const pct = body.scrollTop / (body.scrollHeight - body.clientHeight) * 100;
+    document.getElementById('read-progress-bar').style.width = Math.min(pct, 100) + '%';
+}
+
+function shareArticle() {
+    const url = window.location.href.split('#')[0] + (currentArticle ? '#' + currentArticle : '');
+    const btn = document.getElementById('share-btn-top');
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Share ↗'; btn.classList.remove('copied'); }, 2000);
+        });
+    } else {
+        prompt('Copy this link:', url);
+    }
+}
+
+// Handle hash on load (direct link to article)
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.slice(1);
+    if (hash && document.getElementById('article-' + hash)) {
+        openArticle(hash);
+    }
+});
+
+// Close on Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeArticle(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — WWE Production Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a08;--surface:#111110;--surface-2:#1a1a18;
+  --border:rgba(255,255,255,0.08);--border-hover:rgba(255,255,255,0.18);
+  --gold:#c8a96e;--gold-dim:#8a6f40;--gold-glow:rgba(200,169,110,0.12);
+  --white:#f0ede6;--muted:#7a7870;--muted-2:#4a4845;
+  --danger:#e05c4a;--success:#4caf82;
+  --font-display:'DM Serif Display',serif;
+  --font-ui:'Syne',sans-serif;--font-mono:'IBM Plex Mono',monospace;
+  --radius:6px;--radius-lg:12px;--transition:0.18s ease;
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{background:var(--black);color:var(--white);font-family:var(--font-ui);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+/* grid bg */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(200,169,110,0.08),transparent 70%);pointer-events:none;}
+
+.login-card{
+  position:relative;z-index:1;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:48px 44px;
+  width:100%;max-width:420px;
+}
+.login-brand{margin-bottom:36px;text-align:center;}
+.login-brand .label{font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.login-brand .name{font-family:var(--font-display);font-size:1.6rem;color:var(--white);line-height:1.1;margin-bottom:4px;}
+.login-brand .sub{font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;}
+
+.form-group{margin-bottom:18px;}
+.form-label{display:block;font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.form-input{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;color:var(--white);font-size:0.875rem;font-family:var(--font-ui);outline:none;transition:border-color var(--transition),box-shadow var(--transition);}
+.form-input:focus{border-color:var(--gold-dim);box-shadow:0 0 0 3px var(--gold-glow);}
+.form-input::placeholder{color:var(--muted-2);}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 20px;border-radius:var(--radius);font-family:var(--font-ui);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;border:none;cursor:pointer;transition:all var(--transition);}
+.btn-primary{background:var(--gold);color:var(--black);}
+.btn-primary:hover{background:#d4b87a;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+.error-msg{background:rgba(224,92,74,0.1);border:1px solid rgba(224,92,74,0.25);color:#e05c4a;padding:10px 14px;border-radius:var(--radius);font-size:0.78rem;margin-bottom:16px;display:none;}
+.error-msg.show{display:block;}
+
+.divider-or{display:flex;align-items:center;gap:14px;margin:22px 0;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted-2);}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.register-link{text-align:center;font-size:0.78rem;color:var(--muted);margin-top:20px;}
+.register-link a{color:var(--gold);text-decoration:none;font-weight:600;}
+.register-link a:hover{text-decoration:underline;}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,0.3);border-top-color:var(--black);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.forgot{display:block;text-align:right;font-size:0.72rem;color:var(--muted);margin-top:6px;cursor:pointer;}
+.forgot:hover{color:var(--gold);}
+
+/* register form hidden by default */
+#register-form{display:none;}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-brand">
+    <div class="label">WWE Production</div>
+    <div class="name">Artist Portal</div>
+    <div class="sub">Distribution Platform</div>
+  </div>
+
+  <div class="error-msg" id="error-msg"></div>
+
+  <!-- LOGIN FORM -->
+  <div id="login-form">
+    <div class="form-group">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-input" id="login-email" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      <span class="forgot" onclick="showForgot()">Forgot password?</span>
+    </div>
+    <button class="btn btn-primary" id="login-btn" onclick="doLogin()">
+      Sign In →
+    </button>
+    <div class="divider-or">or</div>
+    <div class="register-link">
+      New artist? <a href="#" onclick="toggleForm('register')">Create an account</a>
+    </div>
+  </div>
+
+  <!-- REGISTER FORM -->
+  <div id="register-form">
+    <div class="form-group">
+      <label class="form-label">Artist / Stage name</label>
+      <input type="text" class="form-input" id="reg-name" placeholder="Your artist name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-input" id="reg-email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="reg-password" placeholder="Min 6 characters">
+    </div>
+    <button class="btn btn-primary" id="reg-btn" onclick="doRegister()">
+      Create Account →
+    </button>
+    <div class="divider-or">or</div>
+    <div class="register-link">
+      Already have an account? <a href="#" onclick="toggleForm('login')">Sign in</a>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD FORM -->
+  <div id="forgot-form" style="display:none;">
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;">Enter your email and we'll send a reset link.</p>
+    <div class="form-group">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-input" id="forgot-email" placeholder="your@email.com">
+    </div>
+    <button class="btn btn-primary" onclick="doForgot()">Send Reset Link</button>
+    <div class="divider-or">or</div>
+    <div class="register-link"><a href="#" onclick="toggleForm('login')">Back to sign in</a></div>
+  </div>
+
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyD8wZX68esulLD9jVks8yXdFInwE0u9xbU",
+  authDomain:        "wwe-production-portal.firebaseapp.com",
+  projectId:         "wwe-production-portal",
+  storageBucket:     "wwe-production-portal.firebasestorage.app",
+  messagingSenderId: "528766558179",
+  appId:             "1:528766558179:web:3fd607894ad276bdb98ad6"
+};
+const ADMIN_EMAIL = "wwemediagroup21@gmail.com";
+// ─────────────────────────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// If already logged in, redirect
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    if (user.email === ADMIN_EMAIL) {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "dashboard.html";
+    }
+  }
+});
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearError() {
+  document.getElementById('error-msg').classList.remove('show');
+}
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<span class="spinner"></span>' : btn.dataset.label;
+}
+
+// Store labels
+document.getElementById('login-btn').dataset.label = 'Sign In →';
+document.getElementById('reg-btn').dataset.label   = 'Create Account →';
+
+window.toggleForm = function(form) {
+  clearError();
+  document.getElementById('login-form').style.display  = form === 'login'    ? 'block' : 'none';
+  document.getElementById('register-form').style.display = form === 'register' ? 'block' : 'none';
+  document.getElementById('forgot-form').style.display  = form === 'forgot'   ? 'block' : 'none';
+};
+
+window.showForgot = function() { window.toggleForm('forgot'); };
+
+window.doLogin = async function() {
+  clearError();
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  if (!email || !pass) { showError('Please enter your email and password.'); return; }
+  setLoading('login-btn', true);
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    // redirect handled by onAuthStateChanged
+  } catch(e) {
+    setLoading('login-btn', false);
+    const msgs = {
+      'auth/user-not-found':  'No account found with this email.',
+      'auth/wrong-password':  'Incorrect password.',
+      'auth/invalid-email':   'Invalid email address.',
+      'auth/too-many-requests':'Too many attempts. Please wait a moment.',
+    };
+    showError(msgs[e.code] || 'Sign in failed. Please try again.');
+  }
+};
+
+window.doRegister = async function() {
+  clearError();
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-password').value;
+  if (!name || !email || !pass) { showError('Please fill in all fields.'); return; }
+  if (pass.length < 6)          { showError('Password must be at least 6 characters.'); return; }
+  if (email === ADMIN_EMAIL)    { showError('This email cannot be used for artist registration.'); return; }
+  setLoading('reg-btn', true);
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    // Create artist profile in Firestore
+    await setDoc(doc(db, 'artists', cred.user.uid), {
+      uid:       cred.user.uid,
+      name:      name,
+      email:     email,
+      role:      'artist',
+      status:    'active',
+      joinedAt:  new Date().toISOString(),
+      totalStreams: 0,
+      earnings:  { available: 0, pending: 0, allTime: 0, withdrawn: 0 }
+    });
+    // redirect handled by onAuthStateChanged
+  } catch(e) {
+    setLoading('reg-btn', false);
+    const msgs = {
+      'auth/email-already-in-use': 'An account with this email already exists.',
+      'auth/invalid-email':        'Invalid email address.',
+      'auth/weak-password':        'Password is too weak.',
+    };
+    showError(msgs[e.code] || 'Registration failed. Please try again.');
+  }
+};
+
+window.doForgot = async function() {
+  clearError();
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) { showError('Please enter your email.'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    document.getElementById('forgot-form').innerHTML = `
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:2rem;margin-bottom:16px;">✓</div>
+        <p style="color:var(--success);font-weight:600;margin-bottom:8px;">Reset link sent!</p>
+        <p style="font-size:0.78rem;color:var(--muted);">Check your inbox at <strong style="color:var(--white);">${email}</strong></p>
+        <a href="#" onclick="toggleForm('login')" style="display:inline-block;margin-top:20px;color:var(--gold);font-size:0.78rem;">Back to sign in</a>
+      </div>`;
+  } catch(e) {
+    showError('Could not send reset email. Check the address and try again.');
+  }
+};
+
+// Enter key support
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('login-form').style.display !== 'none' &&
+        document.getElementById('login-form').offsetParent !== null) window.doLogin();
+  }
+});
+</script>
+</body>
+</html>

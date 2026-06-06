@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Selling — Worldwide Entertainment Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#09090b;--surface:#111114;--surface2:#18181c;
+  --border:#242428;--text:#e8e8ea;--muted:#6b6b74;--faint:#2e2e35;
+  --gold:#c9a84c;--gold-dim:rgba(201,168,76,0.08);--gold-glow:rgba(201,168,76,0.22);
+  --cyan:#5ec9c4;--cyan-dim:rgba(94,201,196,0.08);
+  --purple:#9b7ed4;--red:#e05a52;--green:#4caf7a;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--black);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--black)}::-webkit-scrollbar-thumb{background:var(--faint);border-radius:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:rgba(9,9,11,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-brand{text-decoration:none;display:flex;flex-direction:column;gap:1px}
+.nav-brand-main{font-family:'Playfair Display',serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text)}
+.nav-brand-sub{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-link{font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--text)}
+.btn-ghost{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:8px 16px;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:3px;cursor:pointer;transition:border-color .2s;text-decoration:none;display:inline-block}
+.btn-ghost:hover{border-color:var(--gold)}
+
+/* HERO */
+.hero{padding:130px 0 72px;position:relative;overflow:hidden;background:radial-gradient(ellipse 55% 60% at 90% 5%,rgba(201,168,76,.09),transparent),radial-gradient(ellipse 50% 50% at 10% 90%,rgba(94,201,196,.06),transparent),var(--black)}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:52px 52px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,6vw,72px);line-height:.96;font-weight:900;margin-bottom:18px}
+.hero h1 em{color:var(--cyan);font-style:italic}
+.hero-sub{color:var(--muted);font-size:14px;max-width:500px;line-height:1.9}
+
+/* TIERS */
+.tiers-section{padding:60px 0 20px}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:32px}
+.tiers-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px}
+.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:32px 28px;position:relative;transition:border-color .22s,transform .22s}
+.tier-card:hover{transform:translateY(-3px);border-color:var(--faint)}
+.tier-card.featured{border-color:var(--gold)}
+.tier-badge{position:absolute;top:-12px;left:28px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;padding:4px 12px;border-radius:20px;text-transform:uppercase;font-weight:700}
+.tier-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.tier-price{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:6px}
+.tier-price span{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+.tier-desc{font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:22px;border-top:1px solid var(--border);padding-top:18px}
+.tier-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.tier-features li{font-size:12px;display:flex;align-items:flex-start;gap:9px}
+.tier-features li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:6px}
+.tier-card.featured .tier-features li::before{background:var(--gold)}
+
+/* PAYMENT INFO BOX */
+.payment-info{margin:0 0 48px;padding:24px 28px;background:var(--surface);border:1px solid var(--border);border-radius:6px;display:flex;align-items:flex-start;gap:20px}
+.payment-info-icon{width:48px;height:48px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.payment-info-text h4{font-size:14px;font-weight:600;margin-bottom:6px}
+.payment-info-text p{font-size:12px;color:var(--muted);line-height:1.8}
+.payment-info-text ol{margin:10px 0 0 16px;display:flex;flex-direction:column;gap:4px}
+.payment-info-text ol li{font-size:12px;color:var(--muted);line-height:1.7}
+.payment-info-text ol li strong{color:var(--text)}
+
+/* BEATS CATALOG */
+.catalog-section{padding:20px 0 60px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px}
+.sec-head h2{font-family:'Playfair Display',serif;font-size:30px;font-weight:700}
+.sec-head p{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.08em}
+.beats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.b-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:border-color .2s,transform .2s}
+.b-card:hover{border-color:var(--faint);transform:translateY(-2px)}
+.b-art{aspect-ratio:1.6;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.b-art[data-g="drill"]{background:linear-gradient(135deg,#0b0f18,#181a2a)}
+.b-art[data-g="afro"]{background:linear-gradient(135deg,#160e06,#261e0a)}
+.b-art[data-g="trap"]{background:linear-gradient(135deg,#0c0c18,#14102a)}
+.b-art[data-g="amapiano"]{background:linear-gradient(135deg,#0a1410,#0e221a)}
+.b-art[data-g="hiphop"]{background:linear-gradient(135deg,#0e0e14,#181820)}
+.b-art[data-g="rage"]{background:linear-gradient(135deg,#18080a,#280e10)}
+.b-art-label{position:absolute;top:10px;left:12px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.play-ring{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,.12);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s;z-index:2;position:relative}
+.b-art:hover .play-ring{background:var(--gold);transform:scale(1.06)}
+.b-art:hover .play-ring svg path{fill:#000}
+.play-ring svg{width:15px;height:15px;fill:var(--gold);margin-left:2px}
+.b-art.playing .play-ring{background:var(--gold)}
+.b-art.playing .play-ring svg{fill:#000;margin-left:0}
+.b-body{padding:16px}
+.b-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.b-artist{font-size:11px;color:var(--muted);margin-bottom:10px}
+.b-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.b-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.05em;padding:3px 8px;background:var(--surface2);color:var(--cyan);border-radius:20px}
+.b-foot-dual{border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.b-buy-row{display:flex;align-items:center;justify-content:space-between}
+.b-license-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.b-price-amt{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)}
+.btn-buy{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;padding:6px 11px;background:var(--gold);border:none;color:#000;border-radius:3px;cursor:pointer;transition:opacity .16s}
+.btn-buy:hover{opacity:.8}
+.btn-buy.premium{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.btn-buy.premium:hover{background:var(--gold-dim)}
+
+/* HOW IT WORKS */
+.how-section{padding:72px 0;border-top:1px solid var(--border);background:linear-gradient(180deg,var(--surface) 0%,var(--black) 100%)}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:32px}
+.step{background:var(--surface);padding:28px 24px}
+.step-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:14px;opacity:.7}
+.step h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.step p{font-size:12px;color:var(--muted);line-height:1.8}
+
+/* SUBMIT FORM */
+.upload-section{padding:60px 0 90px}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:40px;max-width:680px}
+.form-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:6px}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:32px}
+.form-row{margin-bottom:20px}
+.form-row label{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--surface2);border:1px solid var(--border);padding:12px 14px;border-radius:3px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.form-row input::placeholder,.form-row textarea::placeholder{color:var(--muted)}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--gold)}
+.form-row select option{background:var(--surface2);color:var(--text)}
+.form-row textarea{resize:vertical;min-height:90px}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.upload-zone{border:1px dashed var(--faint);border-radius:4px;padding:36px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:20px}
+.upload-zone:hover{border-color:var(--gold);background:var(--gold-dim)}
+.upload-zone p{font-size:12px;color:var(--muted);margin-top:8px}
+.upload-zone .uz-icon{font-size:28px;line-height:1}
+.upload-zone small{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+.btn-submit{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:14px 32px;background:var(--gold);border:none;color:#000;border-radius:3px;cursor:pointer;transition:opacity .2s;width:100%}
+.btn-submit:hover{opacity:.85}
+#formSuccess{display:none;padding:20px;background:rgba(76,175,122,.08);border:1px solid var(--green);border-radius:4px;font-size:13px;color:var(--green);margin-top:16px;line-height:1.7}
+
+/* FOOTER */
+.footer{padding:32px 0;border-top:1px solid var(--border)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer-copy{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:11px;color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+
+/* ORDER MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:8px;width:100%;max-width:520px;overflow:hidden;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{padding:28px 32px 20px;border-bottom:1px solid var(--border);position:relative}
+.modal-head h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.modal-head p{font-size:12px;color:var(--muted)}
+.modal-close{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:28px 32px}
+.modal-beat-info{display:flex;align-items:center;gap:16px;padding:16px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);margin-bottom:24px}
+.modal-beat-art{width:52px;height:52px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.modal-beat-art[data-g="afro"]{background:linear-gradient(135deg,#160e06,#261e0a)}
+.modal-beat-art[data-g="trap"]{background:linear-gradient(135deg,#0c0c18,#14102a)}
+.modal-beat-art[data-g="drill"]{background:linear-gradient(135deg,#0b0f18,#181a2a)}
+.modal-beat-art[data-g="hiphop"]{background:linear-gradient(135deg,#0e0e14,#181820)}
+.modal-beat-name{font-size:15px;font-weight:600}
+.modal-beat-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px}
+.modal-license-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.lic-btn{padding:14px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);cursor:pointer;text-align:left;transition:all .16s}
+.lic-btn:hover{border-color:var(--faint)}
+.lic-btn.selected{border-color:var(--gold);background:var(--gold-dim)}
+.lic-btn-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.lic-btn-price{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--gold)}
+.lic-btn-desc{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+.modal-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.modal-fields label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.modal-fields input{width:100%;background:var(--surface2);border:1px solid var(--border);padding:11px 14px;border-radius:3px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.modal-fields input:focus{border-color:var(--gold)}
+.modal-fields input::placeholder{color:var(--muted)}
+.modal-summary{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-summary-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.modal-summary-price{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--gold)}
+.btn-order{width:100%;padding:15px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;border-radius:4px;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-order:hover{opacity:.87}
+.btn-order svg{width:16px;height:16px}
+.modal-note{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6}
+.modal-success{display:none;padding:32px;text-align:center}
+.modal-success .success-icon{font-size:48px;margin-bottom:16px}
+.modal-success h4{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:10px}
+.modal-success p{font-size:13px;color:var(--muted);line-height:1.8;max-width:360px;margin:0 auto}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero>div>*{animation:fadeUp .55s ease both}
+.hero>div>.eyebrow{animation-delay:.05s}
+.hero>div>h1{animation-delay:.14s}
+.hero>div>.hero-sub{animation-delay:.22s}
+
+@media(max-width:768px){
+  .tiers-grid{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:1fr 1fr}
+  .form-card{padding:28px 20px}
+  .form-2col{grid-template-columns:1fr}
+  .nav-link{display:none}
+  .modal{max-width:100%}
+}
+@media(max-width:480px){.steps-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="marketplace-portal.html" class="nav-brand">
+    <span class="nav-brand-main">Worldwide</span>
+    <span class="nav-brand-sub">Entertainment Group</span>
+  </a>
+  <div class="nav-right">
+    <a href="marketplace-portal.html#beats" class="nav-link">Beats</a>
+    <a href="marketplace-portal.html#kits" class="nav-link">Kits</a>
+    <a href="marketplace-portal.html#producers" class="nav-link">Producers</a>
+    <a href="marketplace-portal.html" class="btn-ghost">← Back to Store</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="wrap" style="position:relative;z-index:2">
+    <p class="eyebrow">Worldwide · Sell Your Sound</p>
+    <h1>Put Your Beats<br><em>on the Market.</em></h1>
+    <p class="hero-sub">License your music to artists worldwide. Lease for quick placements, sell exclusive rights for full ownership transfers. Simple ordering — we handle the rest.</p>
+  </div>
+</section>
+
+<!-- PRICING TIERS -->
+<section class="tiers-section">
+  <div class="wrap">
+    <p class="section-label">License Tiers</p>
+    <div class="tiers-grid">
+      <div class="tier-card">
+        <p class="tier-name">Lease License</p>
+        <div class="tier-price">$20 <span>/ beat</span></div>
+        <div class="tier-desc">Non-exclusive rights. The beat stays in the catalog and can be leased to multiple artists. Perfect for mixtapes, demos, YouTube and SoundCloud releases.</div>
+        <ul class="tier-features">
+          <li>Non-exclusive use</li>
+          <li>Up to 5,000 audio streams</li>
+          <li>Up to 2,000 YouTube views</li>
+          <li>MP3 tagged file delivery</li>
+          <li>Term: 2 years</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-badge">Premium</div>
+        <p class="tier-name">Premium License</p>
+        <div class="tier-price">$80 <span>/ beat</span></div>
+        <div class="tier-desc">Exclusive rights. Beat is removed from the store and transferred fully to the buyer. Suitable for commercial releases, label drops, and radio-ready records.</div>
+        <ul class="tier-features">
+          <li>Exclusive — buyer only</li>
+          <li>Unlimited streams &amp; sales</li>
+          <li>Untagged WAV + stems included</li>
+          <li>Commercial radio distribution</li>
+          <li>Full ownership transfer</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- HOW ORDERING WORKS -->
+    <div class="payment-info">
+      <div class="payment-info-icon">💳</div>
+      <div class="payment-info-text">
+        <h4>How to Order a Beat</h4>
+        <p>Select your beat and license below, fill in your name and email, and we send you a professional order request. Here's what happens next:</p>
+        <ol>
+          <li><strong>You submit</strong> your order — we receive it instantly by email.</li>
+          <li><strong>We send you</strong> a payment request to your email within minutes.</li>
+          <li><strong>You complete</strong> the payment securely via the link we send.</li>
+          <li><strong>We deliver</strong> your beat file and license document within 24 hours.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEATS CATALOG -->
+<section class="catalog-section">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Available Beats</h2>
+      <p>WWE Beats · 5 tracks</p>
+    </div>
+    <div class="beats-grid" id="catalogGrid"></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="wrap">
+    <p class="section-label">The Process</p>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Pick Your Beat</h4>
+        <p>Preview any beat from the catalog above. When you're ready, click Lease or Premium to start your order.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Submit Order</h4>
+        <p>Enter your name and email. A pre-filled order summary opens in your mail app — just hit send.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Receive Invoice</h4>
+        <p>We reply within minutes with a secure payment link. Complete it from any device, any location.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Get Your Files</h4>
+        <p>On confirmed payment we deliver your beat file and signed license document directly to your inbox.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBMIT A BEAT FORM (for producers) -->
+<section class="upload-section" id="submit">
+  <div class="wrap">
+    <p class="section-label">Submit a Beat</p>
+    <div class="form-card">
+      <h2 class="form-title">List a New Beat</h2>
+      <p class="form-sub">Fill in the details below. Our team will review and publish your beat within 24 hours.</p>
+      <div class="upload-zone" onclick="document.getElementById('audioFile').click()">
+        <div class="uz-icon">🎵</div>
+        <p>Drop your audio file here or click to browse</p>
+        <small>MP3 or WAV · Max 50 MB</small>
+        <input type="file" id="audioFile" accept=".mp3,.wav" style="display:none" onchange="handleFileSelect(this)">
+      </div>
+      <div id="fileNameDisplay" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--cyan);margin-bottom:16px;display:none"></div>
+      <div class="form-row">
+        <label>Beat Title *</label>
+        <input type="text" id="beatTitle" placeholder="e.g. Midnight Trap, Nairobi Heat…">
+      </div>
+      <div class="form-2col">
+        <div class="form-row">
+          <label>Genre *</label>
+          <select id="beatGenre">
+            <option value="">Select genre</option>
+            <option value="hiphop">Hip Hop</option>
+            <option value="drill">Drill</option>
+            <option value="afro">Afrobeats</option>
+            <option value="amapiano">Amapiano</option>
+            <option value="trap">Trap</option>
+            <option value="rage">Rage</option>
+            <option value="rnb">R&amp;B</option>
+            <option value="gospel">Gospel</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>BPM</label>
+          <input type="number" id="beatBpm" placeholder="e.g. 140" min="40" max="300">
+        </div>
+      </div>
+      <div class="form-2col">
+        <div class="form-row">
+          <label>Key</label>
+          <input type="text" id="beatKey" placeholder="e.g. C Minor">
+        </div>
+        <div class="form-row">
+          <label>Producer Name *</label>
+          <input type="text" id="producerName" placeholder="Your producer tag">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Google Drive Preview Link</label>
+        <input type="url" id="driveLink" placeholder="https://drive.google.com/file/d/…">
+      </div>
+      <div class="form-row">
+        <label>Your Contact Email *</label>
+        <input type="email" id="producerEmail" placeholder="you@yourdomain.com">
+      </div>
+      <div class="form-row">
+        <label>Additional Notes</label>
+        <textarea id="beatNotes" placeholder="Any details about the beat, mood, or collaborations…"></textarea>
+      </div>
+      <button class="btn-submit" onclick="submitBeat()">Submit Beat for Review →</button>
+      <div id="formSuccess">
+        ✓ Beat submitted! We'll review and list it within 24 hours. Check your email for confirmation.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <p class="footer-copy">© 2026 Worldwide Entertainment Group</p>
+    <nav class="footer-links">
+      <a href="marketplace-portal.html">Store</a>
+      <a href="#">Licensing</a>
+      <a href="#">Terms</a>
+      <a href="mailto:wwemediagroup21@gmail.com">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <!-- Step 1: Order form -->
+    <div id="modalForm">
+      <div class="modal-head">
+        <h3>License This Beat</h3>
+        <p>Fill in your details — we'll send you a payment link within minutes.</p>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <!-- Beat info -->
+        <div class="modal-beat-info">
+          <div class="modal-beat-art" id="modalBeatArt" data-g="afro">🎵</div>
+          <div>
+            <div class="modal-beat-name" id="modalBeatName">—</div>
+            <div class="modal-beat-meta" id="modalBeatMeta">—</div>
+          </div>
+        </div>
+        <!-- License toggle -->
+        <div class="modal-license-toggle">
+          <button class="lic-btn selected" id="btnLease" onclick="selectLicense('lease')">
+            <div class="lic-btn-name">Lease</div>
+            <div class="lic-btn-price">$20</div>
+            <div class="lic-btn-desc">Non-exclusive · MP3 tagged · 2 years</div>
+          </button>
+          <button class="lic-btn" id="btnPremium" onclick="selectLicense('premium')">
+            <div class="lic-btn-name">Premium</div>
+            <div class="lic-btn-price">$80</div>
+            <div class="lic-btn-desc">Exclusive · Untagged WAV · Unlimited</div>
+          </button>
+        </div>
+        <!-- Buyer fields -->
+        <div class="modal-fields">
+          <div>
+            <label>Your Name *</label>
+            <input type="text" id="orderName" placeholder="Artist or full name">
+          </div>
+          <div>
+            <label>Your Email *</label>
+            <input type="email" id="orderEmail" placeholder="Where we send the payment link">
+          </div>
+        </div>
+        <!-- Summary -->
+        <div class="modal-summary">
+          <div>
+            <div class="modal-summary-label">Total Due</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px" id="modalLicenseDesc">Lease License · Non-exclusive</div>
+          </div>
+          <div class="modal-summary-price" id="modalTotal">$20</div>
+        </div>
+        <!-- CTA -->
+        <button class="btn-order" onclick="placeOrder()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+          Send Order Request
+        </button>
+        <p class="modal-note">Your email client will open with a pre-filled order. Just hit send — we'll reply with a secure payment link within minutes.</p>
+      </div>
+    </div>
+    <!-- Step 2: Success state -->
+    <div class="modal-success" id="modalSuccess">
+      <div class="success-icon">✉️</div>
+      <h4>Order Sent!</h4>
+      <p>Your order request is on its way to our team. Check your inbox — we'll send you a payment link within minutes to complete your purchase.</p>
+      <button class="btn-order" style="margin-top:24px;max-width:240px;margin-left:auto;margin-right:auto" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LEASE_PRICE   = 20;
+const PREMIUM_PRICE = 80;
+const CONTACT_EMAIL = "wwemediagroup21@gmail.com";
+
+const CATALOG_BEATS = [
+  { title:"Afro Dancehall V2", genre:"afro",  bpm:105, key:"A Minor", producer:"WWE Beats", fileId:"1t-ebC9Fk67_C-OfBajMSIM-UkDtd7Ah_" },
+  { title:"Afro Genge",        genre:"afro",  bpm:98,  key:"C Minor", producer:"WWE Beats", fileId:"1HtgLVI_J41LJspaYyxn0vEe3WCMPpnA-" },
+  { title:"Clap Genge",        genre:"afro",  bpm:112, key:"F Major",  producer:"WWE Beats", fileId:"1W4GBNNLZAhe8Zl6SYI7ayOcQcoNMKvPp" },
+  { title:"GTA Trap",          genre:"trap",  bpm:140, key:"G Minor",  producer:"WWE Beats", fileId:"1VCf6-pkqIoCPlOoBbCgDksEywX5LyVr7" },
+  { title:"Nu Genge V1",       genre:"afro",  bpm:108, key:"D Minor",  producer:"WWE Beats", fileId:"1z91gOed-mwhAzvACtty6vKAjnVp3NmKc" },
+];
+
+/* ── MODAL STATE ── */
+let activeBeat    = null;
+let activeLicense = 'lease';
+
+function openModal(beatIndex, license) {
+  activeBeat    = CATALOG_BEATS[beatIndex];
+  activeLicense = license;
+  document.getElementById('modalBeatName').textContent = activeBeat.title;
+  document.getElementById('modalBeatMeta').textContent = activeBeat.producer + ' · ' + activeBeat.genre + ' · ' + activeBeat.bpm + ' BPM';
+  document.getElementById('modalBeatArt').setAttribute('data-g', activeBeat.genre);
+  selectLicense(license);
+  document.getElementById('modalForm').style.display = '';
+  document.getElementById('modalSuccess').style.display = 'none';
+  document.getElementById('orderName').value  = '';
+  document.getElementById('orderEmail').value = '';
+  document.getElementById('orderModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('orderModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectLicense(type) {
+  activeLicense = type;
+  document.getElementById('btnLease').classList.toggle('selected',   type === 'lease');
+  document.getElementById('btnPremium').classList.toggle('selected', type === 'premium');
+  if (type === 'lease') {
+    document.getElementById('modalTotal').textContent       = '$' + LEASE_PRICE;
+    document.getElementById('modalLicenseDesc').textContent = 'Lease License · Non-exclusive · 2 years';
+  } else {
+    document.getElementById('modalTotal').textContent       = '$' + PREMIUM_PRICE;
+    document.getElementById('modalLicenseDesc').textContent = 'Premium License · Exclusive · Unlimited';
+  }
+}
+
+function placeOrder() {
+  const name  = document.getElementById('orderName').value.trim();
+  const email = document.getElementById('orderEmail').value.trim();
+  if (!name || !email) { alert('Please enter your name and email to continue.'); return; }
+  if (!email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  const beat    = activeBeat;
+  const license = activeLicense === 'lease' ? 'Lease' : 'Premium';
+  const price   = activeLicense === 'lease' ? LEASE_PRICE : PREMIUM_PRICE;
+
+  const subject = `Beat Order — ${license} License: ${beat.title}`;
+  const body =
+`Hello WWE Beats Team,
+
+I would like to order the following beat:
+
+  Beat Title : ${beat.title}
+  Genre      : ${beat.genre}
+  BPM        : ${beat.bpm}
+  Key        : ${beat.key}
+  License    : ${license} License
+  Price      : $${price} USD
+
+My Details:
+  Name  : ${name}
+  Email : ${email}
+
+Please send me the payment details so I can complete this order.
+
+Thank you,
+${name}`;
+
+  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  setTimeout(() => {
+    document.getElementById('modalForm').style.display    = 'none';
+    document.getElementById('modalSuccess').style.display = 'block';
+  }, 400);
+}
+
+/* Close on overlay click */
+document.getElementById('orderModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+/* ── AUDIO ── */
+let currentAudio = null, currentRing = null;
+const PLAY_SVG  = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+const PAUSE_SVG = `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+
+window.togglePlay = function(audioId, ringEl) {
+  const audio = document.getElementById(audioId);
+  if (!audio) return;
+  if (currentAudio && currentAudio !== audio) {
+    currentAudio.pause(); currentAudio.currentTime = 0;
+    if (currentRing) { currentRing.innerHTML = PLAY_SVG; currentRing.closest('.b-art').classList.remove('playing'); }
+  }
+  if (audio.paused) {
+    audio.play().catch(() => {});
+    ringEl.innerHTML = PAUSE_SVG;
+    ringEl.closest('.b-art').classList.add('playing');
+    currentAudio = audio; currentRing = ringEl;
+  } else {
+    audio.pause();
+    ringEl.innerHTML = PLAY_SVG;
+    ringEl.closest('.b-art').classList.remove('playing');
+    currentAudio = null; currentRing = null;
+  }
+  audio.onended = () => { ringEl.innerHTML = PLAY_SVG; ringEl.closest('.b-art').classList.remove('playing'); currentAudio = null; currentRing = null; };
+};
+
+/* ── RENDER CATALOG ── */
+function renderCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  CATALOG_BEATS.forEach((b, i) => {
+    const g = b.genre || 'hiphop';
+    const aId = 'audio_cat_' + i;
+    const card = document.createElement('div');
+    card.className = 'b-card';
+    card.innerHTML = `
+      <div class="b-art" data-g="${g}">
+        <div class="b-art-label">${g.toUpperCase()}</div>
+        <div class="play-ring" onclick="togglePlay('${aId}',this)">${PLAY_SVG}</div>
+        <audio id="${aId}" preload="none" src="https://docs.google.com/uc?export=open&id=${b.fileId}"></audio>
+      </div>
+      <div class="b-body">
+        <div class="b-title">${b.title}</div>
+        <div class="b-artist">${b.producer}</div>
+        <div class="b-tags">
+          <span class="b-tag">${b.genre}</span>
+          ${b.bpm ? `<span class="b-tag">${b.bpm} BPM</span>` : ''}
+          ${b.key ? `<span class="b-tag">${b.key}</span>` : ''}
+        </div>
+        <div class="b-foot-dual">
+          <div class="b-buy-row">
+            <div><div class="b-license-label">Lease</div><div class="b-price-amt">$${LEASE_PRICE}</div></div>
+            <button class="btn-buy" onclick="openModal(${i},'lease')">Buy Lease</button>
+          </div>
+          <div class="b-buy-row">
+            <div><div class="b-license-label">Premium</div><div class="b-price-amt">$${PREMIUM_PRICE}</div></div>
+            <button class="btn-buy premium" onclick="openModal(${i},'premium')">Buy Premium</button>
+          </div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+renderCatalog();
+
+/* ── PRODUCER SUBMIT FORM ── */
+function handleFileSelect(input) {
+  if (!input.files.length) return;
+  const file = input.files[0];
+  const el = document.getElementById('fileNameDisplay');
+  el.textContent = '📎 ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  el.style.display = 'block';
+  document.getElementById('uploadZone').style.borderColor = 'var(--cyan)';
+}
+
+const zone = document.querySelector('.upload-zone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.background='var(--cyan-dim)'; zone.style.borderColor='var(--cyan)'; });
+zone.addEventListener('dragleave', () => { zone.style.background=''; zone.style.borderColor=''; });
+zone.addEventListener('drop', e => {
+  e.preventDefault(); zone.style.borderColor='var(--cyan)';
+  const file = e.dataTransfer.files[0]; if (!file) return;
+  const el = document.getElementById('fileNameDisplay');
+  el.textContent = '📎 ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  el.style.display = 'block';
+});
+
+function submitBeat() {
+  const title    = document.getElementById('beatTitle').value.trim();
+  const genre    = document.getElementById('beatGenre').value;
+  const producer = document.getElementById('producerName').value.trim();
+  const email    = document.getElementById('producerEmail').value.trim();
+  if (!title || !genre || !producer || !email) { alert('Please fill in all required fields.'); return; }
+
+  const bpm       = document.getElementById('beatBpm').value || 'N/A';
+  const key       = document.getElementById('beatKey').value.trim() || 'N/A';
+  const driveLink = document.getElementById('driveLink').value.trim() || 'N/A';
+  const notes     = document.getElementById('beatNotes').value.trim() || 'None';
+
+  const subject = `[Beat Submission] ${title} by ${producer}`;
+  const body =
+`Beat Submission — Worldwide Entertainment Group Marketplace
+
+Title      : ${title}
+Genre      : ${genre}
+BPM        : ${bpm}
+Key        : ${key}
+Producer   : ${producer}
+Email      : ${email}
+Drive Link : ${driveLink}
+
+Notes:
+${notes}
+
+---
+Lease Price   : $${LEASE_PRICE}
+Premium Price : $${PREMIUM_PRICE}`;
+
+  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  document.getElementById('formSuccess').style.display = 'block';
+  document.getElementById('formSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+</script>
+</body>
+</html>
